@@ -37,6 +37,8 @@ def test_dev_launcher_contract_is_complete(path: Path) -> None:
 
 
 def test_powershell_check_only_is_non_mutating_and_prints_commands() -> None:
+    if os.name != "nt":
+        pytest.skip("The PowerShell launcher uses the Windows virtualenv layout")
     powershell = shutil.which("powershell") or shutil.which("pwsh")
     if powershell is None:
         pytest.skip("PowerShell is not available")

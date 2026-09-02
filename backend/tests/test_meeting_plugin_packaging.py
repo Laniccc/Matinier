@@ -20,8 +20,8 @@ from test_builtin_plugin_packages import _settings
 MEETING_ID = "com.matinier.meeting-assistant"
 
 
-def test_two_closed_sources_and_meeting_manifest():
-    registry = BuiltinPluginRegistry(_settings(Path("C:/test-unused-builtin-work")))
+def test_two_closed_sources_and_meeting_manifest(tmp_path):
+    registry = BuiltinPluginRegistry(_settings(tmp_path / "builtin-work"))
     assert {d.plugin_id for d in registry.list()} == {MEETING_ID, "com.matinier.course-organizer"}
     descriptor = registry.require(MEETING_ID)
     manifest = PluginManifest.model_validate_json((descriptor.source_dir / "plugin.json").read_bytes())
