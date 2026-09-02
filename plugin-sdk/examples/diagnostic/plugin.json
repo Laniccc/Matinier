@@ -1,0 +1,29 @@
+{
+  "schema_version": 1,
+  "id": "com.matinier.diagnostic",
+  "name": "Matinier Diagnostic",
+  "version": "1.0.0",
+  "publisher": "Matinier Development",
+  "host_api": ">=1.0 <2.0",
+  "image_digest": "sha256:0000000000000000000000000000000000000000000000000000000000000000",
+  "subscriptions": [
+    "transcript.final"
+  ],
+  "permissions": [
+    "state.get",
+    "state.put",
+    "ui.publish"
+  ],
+  "commands": [
+    "refresh"
+  ],
+  "resources": {
+    "memory_mb": 64,
+    "cpu_count": 0.25,
+    "pids": 16,
+    "tmpfs_mb": 16
+  },
+  "ui_schema_version": 1,
+  "state_schema_version": 1
+}
+

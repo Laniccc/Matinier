@@ -1,0 +1,39 @@
+{
+  "schema_version": 1,
+  "id": "com.matinier.course-organizer",
+  "name": "课程内容整理",
+  "version": "1.0.3",
+  "publisher": "Matinier Development",
+  "host_api": ">=1.0 <2.0",
+  "image_digest": "sha256:0000000000000000000000000000000000000000000000000000000000000000",
+  "subscriptions": [
+    "session.cancelled",
+    "session.completed",
+    "session.failed",
+    "transcript.final",
+    "translation.final"
+  ],
+  "permissions": [
+    "delivery.prepare",
+    "delivery.query",
+    "document.publish",
+    "model.invoke",
+    "state.get",
+    "state.put",
+    "ui.publish"
+  ],
+  "commands": [
+    "generate_final",
+    "retry_final",
+    "select_version",
+    "set_language"
+  ],
+  "resources": {
+    "memory_mb": 256,
+    "cpu_count": 0.5,
+    "pids": 64,
+    "tmpfs_mb": 64
+  },
+  "ui_schema_version": 1,
+  "state_schema_version": 1
+}

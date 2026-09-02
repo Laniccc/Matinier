@@ -1,0 +1,15 @@
+{
+  "schema_version": 1,
+  "id": "com.matinier.meeting-assistant",
+  "name": "私人会议助手",
+  "version": "1.0.0",
+  "publisher": "Matinier Development",
+  "host_api": ">=1.0 <2.0",
+  "image_digest": "sha256:0000000000000000000000000000000000000000000000000000000000000000",
+  "subscriptions": ["session.cancelled", "session.completed", "session.failed", "transcript.final"],
+  "permissions": ["meeting.execution.cancel", "meeting.execution.input", "meeting.execution.submit", "meeting.mark.write", "meeting.operation.query", "meeting.state.query", "meeting.turn.submit", "state.get", "state.put", "ui.publish"],
+  "commands": ["analysis_activate", "analysis_deactivate", "apply_action", "ask", "cancel", "detail_next", "detail_previous", "execute", "input", "load_more", "mark_accept", "mark_create", "mark_dismiss", "previous_page", "refresh", "select_candidates", "select_execution", "select_marks"],
+  "resources": {"memory_mb": 256, "cpu_count": 0.5, "pids": 64, "tmpfs_mb": 64},
+  "ui_schema_version": 1,
+  "state_schema_version": 1
+}

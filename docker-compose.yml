@@ -1,0 +1,12 @@
+services:
+  livekit:
+    image: livekit/livekit-server:v1.13.4
+    # Docker bridge addresses are not reachable from every local browser
+    # sandbox. Advertise the host loopback address that these published ports
+    # actually expose, so local browser ICE can use UDP 7882 or TCP 7881.
+    command:
+      ["--dev", "--bind", "0.0.0.0", "--node-ip", "127.0.0.1"]
+    ports:
+      - "7880:7880"
+      - "7881:7881"
+      - "7882:7882/udp"

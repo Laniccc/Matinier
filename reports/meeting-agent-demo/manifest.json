@@ -1,0 +1,10 @@
+{
+  "code_identifier": "workspace",
+  "generated_at": "2026-09-02T09:06:23.781120+00:00",
+  "provider": "scripted",
+  "seed": 20260901,
+  "suite_hash": "e5bd8a7506c19e8b31a860b7b19c7c18d6cef8b95fcffd1d8dea88367b7264c0",
+  "suite_id": "meeting_agent_offline_demo",
+  "trial_count": 5,
+  "trials_per_case": 1
+}

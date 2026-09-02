@@ -1,0 +1,1 @@
+"""Managed Room application services."""

@@ -1,0 +1,1367 @@
+{
+  "$defs": {
+    "ActionExecuteInput": {
+      "additionalProperties": false,
+      "properties": {
+        "action": {
+          "maxLength": 80,
+          "minLength": 1,
+          "pattern": "^[a-z][a-z0-9_.-]+$",
+          "title": "Action",
+          "type": "string"
+        },
+        "payload": {
+          "additionalProperties": true,
+          "title": "Payload",
+          "type": "object"
+        }
+      },
+      "required": [
+        "action",
+        "payload"
+      ],
+      "title": "ActionExecuteInput",
+      "type": "object"
+    },
+    "ActionExecuteOutput": {
+      "additionalProperties": false,
+      "properties": {
+        "external_id": {
+          "anyOf": [
+            {
+              "maxLength": 256,
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "External Id"
+        },
+        "status": {
+          "enum": [
+            "completed",
+            "rejected"
+          ],
+          "title": "Status",
+          "type": "string"
+        }
+      },
+      "required": [
+        "status"
+      ],
+      "title": "ActionExecuteOutput",
+      "type": "object"
+    },
+    "DeliveryPrepareInput": {
+      "additionalProperties": false,
+      "properties": {
+        "final_sequence": {
+          "minimum": 0,
+          "title": "Final Sequence",
+          "type": "integer"
+        },
+        "output_language": {
+          "maxLength": 32,
+          "minLength": 2,
+          "pattern": "^[A-Za-z]{2,8}(?:-[A-Za-z0-9]{1,8})*$",
+          "title": "Output Language",
+          "type": "string"
+        },
+        "trigger": {
+          "enum": [
+            "manual",
+            "session_completed",
+            "session_failed",
+            "session_cancelled"
+          ],
+          "title": "Trigger",
+          "type": "string"
+        }
+      },
+      "required": [
+        "trigger",
+        "output_language",
+        "final_sequence"
+      ],
+      "title": "DeliveryPrepareInput",
+      "type": "object"
+    },
+    "DeliveryPrepareOutput": {
+      "additionalProperties": false,
+      "properties": {
+        "content_hash": {
+          "pattern": "^[0-9a-f]{64}$",
+          "title": "Content Hash",
+          "type": "string"
+        },
+        "final_sequence": {
+          "minimum": 0,
+          "title": "Final Sequence",
+          "type": "integer"
+        },
+        "package_id": {
+          "maxLength": 128,
+          "minLength": 1,
+          "title": "Package Id",
+          "type": "string"
+        },
+        "package_version": {
+          "minimum": 1,
+          "title": "Package Version",
+          "type": "integer"
+        },
+        "source_language": {
+          "maxLength": 32,
+          "minLength": 2,
+          "pattern": "^[A-Za-z]{2,8}(?:-[A-Za-z0-9]{1,8})*$",
+          "title": "Source Language",
+          "type": "string"
+        },
+        "target_languages": {
+          "default": [],
+          "items": {
+            "type": "string"
+          },
+          "maxItems": 32,
+          "title": "Target Languages",
+          "type": "array"
+        }
+      },
+      "required": [
+        "package_id",
+        "package_version",
+        "content_hash",
+        "source_language",
+        "final_sequence"
+      ],
+      "title": "DeliveryPrepareOutput",
+      "type": "object"
+    },
+    "DeliveryQueryInput": {
+      "additionalProperties": false,
+      "properties": {
+        "after_item": {
+          "default": 0,
+          "minimum": 0,
+          "title": "After Item",
+          "type": "integer"
+        },
+        "document_kinds": {
+          "items": {
+            "type": "string"
+          },
+          "maxItems": 100,
+          "minItems": 1,
+          "title": "Document Kinds",
+          "type": "array"
+        },
+        "language": {
+          "anyOf": [
+            {
+              "maxLength": 32,
+              "minLength": 2,
+              "pattern": "^[A-Za-z]{2,8}(?:-[A-Za-z0-9]{1,8})*$",
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Language"
+        },
+        "limit": {
+          "default": 100,
+          "maximum": 1000,
+          "minimum": 1,
+          "title": "Limit",
+          "type": "integer"
+        },
+        "package_id": {
+          "maxLength": 128,
+          "minLength": 1,
+          "title": "Package Id",
+          "type": "string"
+        }
+      },
+      "required": [
+        "package_id",
+        "document_kinds"
+      ],
+      "title": "DeliveryQueryInput",
+      "type": "object"
+    },
+    "DeliveryQueryOutput": {
+      "additionalProperties": false,
+      "properties": {
+        "content_hash": {
+          "pattern": "^[0-9a-f]{64}$",
+          "title": "Content Hash",
+          "type": "string"
+        },
+        "items": {
+          "items": {
+            "additionalProperties": true,
+            "type": "object"
+          },
+          "maxItems": 1000,
+          "title": "Items",
+          "type": "array"
+        },
+        "next_after_item": {
+          "anyOf": [
+            {
+              "minimum": 0,
+              "type": "integer"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Next After Item"
+        },
+        "package_id": {
+          "maxLength": 128,
+          "minLength": 1,
+          "title": "Package Id",
+          "type": "string"
+        },
+        "package_version": {
+          "minimum": 1,
+          "title": "Package Version",
+          "type": "integer"
+        }
+      },
+      "required": [
+        "package_id",
+        "package_version",
+        "content_hash",
+        "items"
+      ],
+      "title": "DeliveryQueryOutput",
+      "type": "object"
+    },
+    "MediaQueryInput": {
+      "additionalProperties": false,
+      "properties": {
+        "after_sequence": {
+          "default": 0,
+          "minimum": 0,
+          "title": "After Sequence",
+          "type": "integer"
+        },
+        "event_types": {
+          "items": {
+            "type": "string"
+          },
+          "maxItems": 32,
+          "minItems": 1,
+          "title": "Event Types",
+          "type": "array"
+        },
+        "limit": {
+          "default": 100,
+          "maximum": 1000,
+          "minimum": 1,
+          "title": "Limit",
+          "type": "integer"
+        }
+      },
+      "required": [
+        "event_types"
+      ],
+      "title": "MediaQueryInput",
+      "type": "object"
+    },
+    "MediaQueryOutput": {
+      "additionalProperties": false,
+      "properties": {
+        "events": {
+          "items": {
+            "additionalProperties": true,
+            "type": "object"
+          },
+          "maxItems": 1000,
+          "title": "Events",
+          "type": "array"
+        }
+      },
+      "required": [
+        "events"
+      ],
+      "title": "MediaQueryOutput",
+      "type": "object"
+    },
+    "MeetingAskInput": {
+      "additionalProperties": false,
+      "properties": {
+        "intent_token": {
+          "maxLength": 256,
+          "minLength": 32,
+          "title": "Intent Token",
+          "type": "string"
+        },
+        "mark_ids": {
+          "items": {
+            "maxLength": 255,
+            "minLength": 1,
+            "type": "string"
+          },
+          "maxItems": 50,
+          "title": "Mark Ids",
+          "type": "array"
+        },
+        "message": {
+          "maxLength": 4000,
+          "minLength": 1,
+          "title": "Message",
+          "type": "string"
+        },
+        "request_id": {
+          "maxLength": 255,
+          "minLength": 1,
+          "title": "Request Id",
+          "type": "string"
+        }
+      },
+      "required": [
+        "request_id",
+        "intent_token",
+        "message"
+      ],
+      "title": "MeetingAskInput",
+      "type": "object"
+    },
+    "MeetingCancelInput": {
+      "additionalProperties": false,
+      "properties": {
+        "execution_id": {
+          "maxLength": 255,
+          "minLength": 1,
+          "title": "Execution Id",
+          "type": "string"
+        },
+        "expected_state_version": {
+          "minimum": 1,
+          "title": "Expected State Version",
+          "type": "integer"
+        },
+        "intent_token": {
+          "maxLength": 256,
+          "minLength": 32,
+          "title": "Intent Token",
+          "type": "string"
+        },
+        "request_id": {
+          "maxLength": 255,
+          "minLength": 1,
+          "title": "Request Id",
+          "type": "string"
+        }
+      },
+      "required": [
+        "request_id",
+        "intent_token",
+        "execution_id",
+        "expected_state_version"
+      ],
+      "title": "MeetingCancelInput",
+      "type": "object"
+    },
+    "MeetingEvidenceRef": {
+      "additionalProperties": false,
+      "properties": {
+        "revision": {
+          "minimum": 1,
+          "title": "Revision",
+          "type": "integer"
+        },
+        "segment_id": {
+          "maxLength": 255,
+          "minLength": 1,
+          "title": "Segment Id",
+          "type": "string"
+        }
+      },
+      "required": [
+        "segment_id",
+        "revision"
+      ],
+      "title": "MeetingEvidenceRef",
+      "type": "object"
+    },
+    "MeetingExecuteInput": {
+      "additionalProperties": false,
+      "properties": {
+        "candidate_ids": {
+          "items": {
+            "maxLength": 255,
+            "minLength": 1,
+            "type": "string"
+          },
+          "maxItems": 20,
+          "minItems": 1,
+          "title": "Candidate Ids",
+          "type": "array"
+        },
+        "intent_token": {
+          "maxLength": 256,
+          "minLength": 32,
+          "title": "Intent Token",
+          "type": "string"
+        },
+        "mark_ids": {
+          "items": {
+            "maxLength": 255,
+            "minLength": 1,
+            "type": "string"
+          },
+          "maxItems": 50,
+          "title": "Mark Ids",
+          "type": "array"
+        },
+        "message": {
+          "maxLength": 4000,
+          "minLength": 1,
+          "title": "Message",
+          "type": "string"
+        },
+        "request_id": {
+          "maxLength": 255,
+          "minLength": 1,
+          "title": "Request Id",
+          "type": "string"
+        }
+      },
+      "required": [
+        "request_id",
+        "intent_token",
+        "message",
+        "candidate_ids"
+      ],
+      "title": "MeetingExecuteInput",
+      "type": "object"
+    },
+    "MeetingInputInput": {
+      "additionalProperties": false,
+      "properties": {
+        "execution_id": {
+          "maxLength": 255,
+          "minLength": 1,
+          "title": "Execution Id",
+          "type": "string"
+        },
+        "expected_state_version": {
+          "minimum": 1,
+          "title": "Expected State Version",
+          "type": "integer"
+        },
+        "input": {
+          "maxLength": 4000,
+          "minLength": 1,
+          "title": "Input",
+          "type": "string"
+        },
+        "intent_token": {
+          "maxLength": 256,
+          "minLength": 32,
+          "title": "Intent Token",
+          "type": "string"
+        },
+        "request_id": {
+          "maxLength": 255,
+          "minLength": 1,
+          "title": "Request Id",
+          "type": "string"
+        }
+      },
+      "required": [
+        "request_id",
+        "intent_token",
+        "execution_id",
+        "expected_state_version",
+        "input"
+      ],
+      "title": "MeetingInputInput",
+      "type": "object"
+    },
+    "MeetingMarkInput": {
+      "additionalProperties": false,
+      "properties": {
+        "evidence": {
+          "items": {
+            "$ref": "#/$defs/MeetingEvidenceRef"
+          },
+          "maxItems": 50,
+          "title": "Evidence",
+          "type": "array"
+        },
+        "expected_state_version": {
+          "anyOf": [
+            {
+              "minimum": 0,
+              "type": "integer"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Expected State Version"
+        },
+        "intent_token": {
+          "maxLength": 256,
+          "minLength": 32,
+          "title": "Intent Token",
+          "type": "string"
+        },
+        "kind": {
+          "default": "highlight",
+          "enum": [
+            "highlight",
+            "decision",
+            "action",
+            "conflict"
+          ],
+          "title": "Kind",
+          "type": "string"
+        },
+        "mark_id": {
+          "anyOf": [
+            {
+              "maxLength": 255,
+              "minLength": 1,
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Mark Id"
+        },
+        "note": {
+          "anyOf": [
+            {
+              "maxLength": 2000,
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Note"
+        },
+        "operation": {
+          "enum": [
+            "create",
+            "accept",
+            "dismiss"
+          ],
+          "title": "Operation",
+          "type": "string"
+        },
+        "request_id": {
+          "maxLength": 255,
+          "minLength": 1,
+          "title": "Request Id",
+          "type": "string"
+        },
+        "title": {
+          "anyOf": [
+            {
+              "maxLength": 500,
+              "minLength": 1,
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Title"
+        }
+      },
+      "required": [
+        "request_id",
+        "intent_token",
+        "operation"
+      ],
+      "title": "MeetingMarkInput",
+      "type": "object"
+    },
+    "MeetingOperationAccepted": {
+      "additionalProperties": false,
+      "properties": {
+        "operation_id": {
+          "maxLength": 36,
+          "minLength": 1,
+          "title": "Operation Id",
+          "type": "string"
+        },
+        "status": {
+          "const": "accepted",
+          "default": "accepted",
+          "title": "Status",
+          "type": "string"
+        }
+      },
+      "required": [
+        "operation_id"
+      ],
+      "title": "MeetingOperationAccepted",
+      "type": "object"
+    },
+    "MeetingOperationQueryInput": {
+      "additionalProperties": false,
+      "properties": {
+        "after": {
+          "default": 0,
+          "minimum": 0,
+          "title": "After",
+          "type": "integer"
+        },
+        "execution_id": {
+          "anyOf": [
+            {
+              "maxLength": 255,
+              "minLength": 1,
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Execution Id"
+        },
+        "known_version": {
+          "anyOf": [
+            {
+              "minimum": 0,
+              "type": "integer"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Known Version"
+        },
+        "limit": {
+          "default": 50,
+          "maximum": 100,
+          "minimum": 1,
+          "title": "Limit",
+          "type": "integer"
+        },
+        "offset": {
+          "default": 0,
+          "maximum": 1000000,
+          "minimum": 0,
+          "title": "Offset",
+          "type": "integer"
+        },
+        "operation_id": {
+          "anyOf": [
+            {
+              "maxLength": 255,
+              "minLength": 1,
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Operation Id"
+        }
+      },
+      "title": "MeetingOperationQueryInput",
+      "type": "object"
+    },
+    "MeetingQueryOutput": {
+      "additionalProperties": false,
+      "properties": {
+        "data": {
+          "additionalProperties": true,
+          "title": "Data",
+          "type": "object"
+        }
+      },
+      "required": [
+        "data"
+      ],
+      "title": "MeetingQueryOutput",
+      "type": "object"
+    },
+    "MeetingStateQueryInput": {
+      "additionalProperties": false,
+      "properties": {
+        "after": {
+          "default": 0,
+          "minimum": 0,
+          "title": "After",
+          "type": "integer"
+        },
+        "known_version": {
+          "anyOf": [
+            {
+              "minimum": 0,
+              "type": "integer"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Known Version"
+        },
+        "limit": {
+          "default": 50,
+          "maximum": 100,
+          "minimum": 1,
+          "title": "Limit",
+          "type": "integer"
+        },
+        "offset": {
+          "default": 0,
+          "maximum": 1000000,
+          "minimum": 0,
+          "title": "Offset",
+          "type": "integer"
+        }
+      },
+      "title": "MeetingStateQueryInput",
+      "type": "object"
+    },
+    "ModelInvokeInput": {
+      "additionalProperties": false,
+      "properties": {
+        "input_category": {
+          "enum": [
+            "public",
+            "session_transcript",
+            "plugin_state"
+          ],
+          "title": "Input Category",
+          "type": "string"
+        },
+        "input_payload": {
+          "additionalProperties": true,
+          "title": "Input Payload",
+          "type": "object"
+        },
+        "max_output_tokens": {
+          "maximum": 4096,
+          "minimum": 1,
+          "title": "Max Output Tokens",
+          "type": "integer"
+        },
+        "response_format": {
+          "const": "json_object",
+          "default": "json_object",
+          "title": "Response Format",
+          "type": "string"
+        },
+        "system_prompt": {
+          "maxLength": 32000,
+          "minLength": 1,
+          "title": "System Prompt",
+          "type": "string"
+        },
+        "timeout_seconds": {
+          "exclusiveMinimum": 0,
+          "maximum": 30,
+          "title": "Timeout Seconds",
+          "type": "number"
+        },
+        "user_prompt": {
+          "maxLength": 32000,
+          "minLength": 1,
+          "title": "User Prompt",
+          "type": "string"
+        }
+      },
+      "required": [
+        "input_category",
+        "system_prompt",
+        "user_prompt",
+        "input_payload",
+        "max_output_tokens",
+        "timeout_seconds"
+      ],
+      "title": "ModelInvokeInput",
+      "type": "object"
+    },
+    "ModelInvokeOutput": {
+      "additionalProperties": false,
+      "properties": {
+        "finish_reason": {
+          "anyOf": [
+            {
+              "maxLength": 64,
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Finish Reason"
+        },
+        "model": {
+          "maxLength": 128,
+          "minLength": 1,
+          "title": "Model",
+          "type": "string"
+        },
+        "output": {
+          "additionalProperties": true,
+          "title": "Output",
+          "type": "object"
+        },
+        "output_tokens": {
+          "default": 0,
+          "maximum": 4096,
+          "minimum": 0,
+          "title": "Output Tokens",
+          "type": "integer"
+        },
+        "provider": {
+          "maxLength": 64,
+          "minLength": 1,
+          "title": "Provider",
+          "type": "string"
+        }
+      },
+      "required": [
+        "output",
+        "provider",
+        "model"
+      ],
+      "title": "ModelInvokeOutput",
+      "type": "object"
+    },
+    "NetworkFetchInput": {
+      "additionalProperties": false,
+      "properties": {
+        "accepted_mime_types": {
+          "items": {
+            "type": "string"
+          },
+          "maxItems": 16,
+          "minItems": 1,
+          "title": "Accepted Mime Types",
+          "type": "array"
+        },
+        "body": {
+          "anyOf": [
+            {
+              "maxLength": 128000,
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Body"
+        },
+        "max_response_bytes": {
+          "default": 262144,
+          "maximum": 2097152,
+          "minimum": 1,
+          "title": "Max Response Bytes",
+          "type": "integer"
+        },
+        "method": {
+          "default": "GET",
+          "enum": [
+            "GET",
+            "HEAD",
+            "POST"
+          ],
+          "title": "Method",
+          "type": "string"
+        },
+        "url": {
+          "format": "uri",
+          "maxLength": 2083,
+          "minLength": 1,
+          "title": "Url",
+          "type": "string"
+        }
+      },
+      "required": [
+        "url",
+        "accepted_mime_types"
+      ],
+      "title": "NetworkFetchInput",
+      "type": "object"
+    },
+    "NetworkFetchOutput": {
+      "additionalProperties": false,
+      "properties": {
+        "body": {
+          "maxLength": 2097152,
+          "title": "Body",
+          "type": "string"
+        },
+        "mime_type": {
+          "maxLength": 128,
+          "minLength": 1,
+          "title": "Mime Type",
+          "type": "string"
+        },
+        "status": {
+          "maximum": 599,
+          "minimum": 100,
+          "title": "Status",
+          "type": "integer"
+        }
+      },
+      "required": [
+        "status",
+        "mime_type",
+        "body"
+      ],
+      "title": "NetworkFetchOutput",
+      "type": "object"
+    },
+    "PluginDocumentEvidenceRef": {
+      "additionalProperties": false,
+      "properties": {
+        "end_ms": {
+          "minimum": 0,
+          "title": "End Ms",
+          "type": "integer"
+        },
+        "item_id": {
+          "pattern": "^[A-Za-z0-9][A-Za-z0-9_.:-]{0,191}$",
+          "title": "Item Id",
+          "type": "string"
+        },
+        "source_segment_ids": {
+          "items": {
+            "type": "string"
+          },
+          "maxItems": 128,
+          "minItems": 1,
+          "title": "Source Segment Ids",
+          "type": "array"
+        },
+        "start_ms": {
+          "minimum": 0,
+          "title": "Start Ms",
+          "type": "integer"
+        }
+      },
+      "required": [
+        "item_id",
+        "source_segment_ids",
+        "start_ms",
+        "end_ms"
+      ],
+      "title": "PluginDocumentEvidenceRef",
+      "type": "object"
+    },
+    "PluginDocumentPublishInput": {
+      "additionalProperties": false,
+      "properties": {
+        "completeness": {
+          "enum": [
+            "interim",
+            "complete",
+            "partial_terminal"
+          ],
+          "title": "Completeness",
+          "type": "string"
+        },
+        "content": {
+          "additionalProperties": true,
+          "title": "Content",
+          "type": "object"
+        },
+        "evidence_refs": {
+          "default": [],
+          "items": {
+            "$ref": "#/$defs/PluginDocumentEvidenceRef"
+          },
+          "maxItems": 2000,
+          "title": "Evidence Refs",
+          "type": "array"
+        },
+        "identity_key": {
+          "pattern": "^[A-Za-z0-9][A-Za-z0-9_.:-]{0,191}$",
+          "title": "Identity Key",
+          "type": "string"
+        },
+        "language": {
+          "maxLength": 32,
+          "minLength": 2,
+          "pattern": "^[A-Za-z]{2,8}(?:-[A-Za-z0-9]{1,8})*$",
+          "title": "Language",
+          "type": "string"
+        },
+        "markdown": {
+          "title": "Markdown",
+          "type": "string"
+        },
+        "schema_name": {
+          "pattern": "^[a-z][a-z0-9_]*(?:\\.[a-z][a-z0-9_-]*)+$",
+          "title": "Schema Name",
+          "type": "string"
+        },
+        "schema_version": {
+          "pattern": "^[0-9]+(?:\\.[0-9]+){1,2}$",
+          "title": "Schema Version",
+          "type": "string"
+        },
+        "source_package_id": {
+          "maxLength": 128,
+          "minLength": 1,
+          "title": "Source Package Id",
+          "type": "string"
+        },
+        "trigger": {
+          "enum": [
+            "manual",
+            "session_completed",
+            "session_failed",
+            "session_cancelled"
+          ],
+          "title": "Trigger",
+          "type": "string"
+        }
+      },
+      "required": [
+        "identity_key",
+        "schema_name",
+        "schema_version",
+        "language",
+        "trigger",
+        "completeness",
+        "source_package_id",
+        "content",
+        "markdown"
+      ],
+      "title": "PluginDocumentPublishInput",
+      "type": "object"
+    },
+    "PluginDocumentPublishOutput": {
+      "additionalProperties": false,
+      "properties": {
+        "completeness": {
+          "enum": [
+            "interim",
+            "complete",
+            "partial_terminal"
+          ],
+          "title": "Completeness",
+          "type": "string"
+        },
+        "content_hash": {
+          "pattern": "^[0-9a-f]{64}$",
+          "title": "Content Hash",
+          "type": "string"
+        },
+        "document_id": {
+          "maxLength": 128,
+          "minLength": 1,
+          "title": "Document Id",
+          "type": "string"
+        },
+        "document_version": {
+          "minimum": 1,
+          "title": "Document Version",
+          "type": "integer"
+        },
+        "identity_key": {
+          "pattern": "^[A-Za-z0-9][A-Za-z0-9_.:-]{0,191}$",
+          "title": "Identity Key",
+          "type": "string"
+        },
+        "language": {
+          "maxLength": 32,
+          "minLength": 2,
+          "pattern": "^[A-Za-z]{2,8}(?:-[A-Za-z0-9]{1,8})*$",
+          "title": "Language",
+          "type": "string"
+        },
+        "trigger": {
+          "enum": [
+            "manual",
+            "session_completed",
+            "session_failed",
+            "session_cancelled"
+          ],
+          "title": "Trigger",
+          "type": "string"
+        }
+      },
+      "required": [
+        "document_id",
+        "document_version",
+        "identity_key",
+        "content_hash",
+        "language",
+        "trigger",
+        "completeness"
+      ],
+      "title": "PluginDocumentPublishOutput",
+      "type": "object"
+    },
+    "StateGetInput": {
+      "additionalProperties": false,
+      "properties": {
+        "key": {
+          "maxLength": 128,
+          "minLength": 1,
+          "pattern": "^[A-Za-z0-9_.-]+$",
+          "title": "Key",
+          "type": "string"
+        }
+      },
+      "required": [
+        "key"
+      ],
+      "title": "StateGetInput",
+      "type": "object"
+    },
+    "StateGetOutput": {
+      "additionalProperties": false,
+      "properties": {
+        "value": {
+          "anyOf": [
+            {
+              "additionalProperties": true,
+              "type": "object"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "title": "Value"
+        },
+        "version": {
+          "minimum": 0,
+          "title": "Version",
+          "type": "integer"
+        }
+      },
+      "required": [
+        "value",
+        "version"
+      ],
+      "title": "StateGetOutput",
+      "type": "object"
+    },
+    "StatePutInput": {
+      "additionalProperties": false,
+      "properties": {
+        "expected_version": {
+          "minimum": 0,
+          "title": "Expected Version",
+          "type": "integer"
+        },
+        "key": {
+          "maxLength": 128,
+          "minLength": 1,
+          "pattern": "^[A-Za-z0-9_.-]+$",
+          "title": "Key",
+          "type": "string"
+        },
+        "value": {
+          "additionalProperties": true,
+          "title": "Value",
+          "type": "object"
+        }
+      },
+      "required": [
+        "key",
+        "value",
+        "expected_version"
+      ],
+      "title": "StatePutInput",
+      "type": "object"
+    },
+    "StatePutOutput": {
+      "additionalProperties": false,
+      "properties": {
+        "version": {
+          "minimum": 1,
+          "title": "Version",
+          "type": "integer"
+        }
+      },
+      "required": [
+        "version"
+      ],
+      "title": "StatePutOutput",
+      "type": "object"
+    },
+    "UIViewPublishInput": {
+      "additionalProperties": false,
+      "properties": {
+        "actions": {
+          "default": [],
+          "items": {
+            "additionalProperties": true,
+            "type": "object"
+          },
+          "maxItems": 32,
+          "title": "Actions",
+          "type": "array"
+        },
+        "surface": {
+          "enum": [
+            "panel",
+            "overlay"
+          ],
+          "title": "Surface",
+          "type": "string"
+        },
+        "view": {
+          "additionalProperties": true,
+          "title": "View",
+          "type": "object"
+        },
+        "view_id": {
+          "maxLength": 128,
+          "minLength": 1,
+          "pattern": "^[A-Za-z0-9_.-]+$",
+          "title": "View Id",
+          "type": "string"
+        },
+        "view_version": {
+          "minimum": 1,
+          "title": "View Version",
+          "type": "integer"
+        }
+      },
+      "required": [
+        "surface",
+        "view_id",
+        "view_version",
+        "view"
+      ],
+      "title": "UIViewPublishInput",
+      "type": "object"
+    },
+    "UIViewPublishOutput": {
+      "additionalProperties": false,
+      "properties": {
+        "accepted": {
+          "title": "Accepted",
+          "type": "boolean"
+        },
+        "view_version": {
+          "minimum": 1,
+          "title": "View Version",
+          "type": "integer"
+        }
+      },
+      "required": [
+        "accepted",
+        "view_version"
+      ],
+      "title": "UIViewPublishOutput",
+      "type": "object"
+    }
+  },
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "anyOf": [
+    {
+      "$ref": "#/$defs/MediaQueryInput"
+    },
+    {
+      "$ref": "#/$defs/MediaQueryOutput"
+    },
+    {
+      "$ref": "#/$defs/ModelInvokeInput"
+    },
+    {
+      "$ref": "#/$defs/ModelInvokeOutput"
+    },
+    {
+      "$ref": "#/$defs/DeliveryPrepareInput"
+    },
+    {
+      "$ref": "#/$defs/DeliveryPrepareOutput"
+    },
+    {
+      "$ref": "#/$defs/DeliveryQueryInput"
+    },
+    {
+      "$ref": "#/$defs/DeliveryQueryOutput"
+    },
+    {
+      "$ref": "#/$defs/NetworkFetchInput"
+    },
+    {
+      "$ref": "#/$defs/NetworkFetchOutput"
+    },
+    {
+      "$ref": "#/$defs/StateGetInput"
+    },
+    {
+      "$ref": "#/$defs/StateGetOutput"
+    },
+    {
+      "$ref": "#/$defs/StatePutInput"
+    },
+    {
+      "$ref": "#/$defs/StatePutOutput"
+    },
+    {
+      "$ref": "#/$defs/UIViewPublishInput"
+    },
+    {
+      "$ref": "#/$defs/UIViewPublishOutput"
+    },
+    {
+      "$ref": "#/$defs/ActionExecuteInput"
+    },
+    {
+      "$ref": "#/$defs/ActionExecuteOutput"
+    },
+    {
+      "$ref": "#/$defs/PluginDocumentPublishInput"
+    },
+    {
+      "$ref": "#/$defs/PluginDocumentPublishOutput"
+    },
+    {
+      "$ref": "#/$defs/MeetingAskInput"
+    },
+    {
+      "$ref": "#/$defs/MeetingExecuteInput"
+    },
+    {
+      "$ref": "#/$defs/MeetingMarkInput"
+    },
+    {
+      "$ref": "#/$defs/MeetingInputInput"
+    },
+    {
+      "$ref": "#/$defs/MeetingCancelInput"
+    },
+    {
+      "$ref": "#/$defs/MeetingStateQueryInput"
+    },
+    {
+      "$ref": "#/$defs/MeetingOperationQueryInput"
+    },
+    {
+      "$ref": "#/$defs/MeetingOperationAccepted"
+    },
+    {
+      "$ref": "#/$defs/MeetingQueryOutput"
+    }
+  ]
+}

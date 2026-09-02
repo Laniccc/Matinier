@@ -1,0 +1,132 @@
+{
+  "$defs": {
+    "PluginResourceLimits": {
+      "additionalProperties": false,
+      "properties": {
+        "cpu_count": {
+          "default": 0.5,
+          "exclusiveMinimum": 0,
+          "maximum": 4,
+          "title": "Cpu Count",
+          "type": "number"
+        },
+        "memory_mb": {
+          "default": 256,
+          "maximum": 4096,
+          "minimum": 64,
+          "title": "Memory Mb",
+          "type": "integer"
+        },
+        "pids": {
+          "default": 64,
+          "maximum": 512,
+          "minimum": 16,
+          "title": "Pids",
+          "type": "integer"
+        },
+        "tmpfs_mb": {
+          "default": 64,
+          "maximum": 1024,
+          "minimum": 16,
+          "title": "Tmpfs Mb",
+          "type": "integer"
+        }
+      },
+      "title": "PluginResourceLimits",
+      "type": "object"
+    }
+  },
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "additionalProperties": false,
+  "properties": {
+    "commands": {
+      "default": [],
+      "items": {
+        "type": "string"
+      },
+      "title": "Commands",
+      "type": "array"
+    },
+    "host_api": {
+      "maxLength": 128,
+      "minLength": 3,
+      "title": "Host Api",
+      "type": "string"
+    },
+    "id": {
+      "maxLength": 128,
+      "minLength": 5,
+      "title": "Id",
+      "type": "string"
+    },
+    "image_digest": {
+      "title": "Image Digest",
+      "type": "string"
+    },
+    "name": {
+      "maxLength": 80,
+      "minLength": 1,
+      "title": "Name",
+      "type": "string"
+    },
+    "permissions": {
+      "default": [],
+      "items": {
+        "type": "string"
+      },
+      "title": "Permissions",
+      "type": "array"
+    },
+    "publisher": {
+      "maxLength": 128,
+      "minLength": 1,
+      "title": "Publisher",
+      "type": "string"
+    },
+    "resources": {
+      "$ref": "#/$defs/PluginResourceLimits"
+    },
+    "schema_version": {
+      "const": 1,
+      "default": 1,
+      "title": "Schema Version",
+      "type": "integer"
+    },
+    "state_schema_version": {
+      "default": 1,
+      "minimum": 1,
+      "title": "State Schema Version",
+      "type": "integer"
+    },
+    "subscriptions": {
+      "default": [],
+      "items": {
+        "type": "string"
+      },
+      "title": "Subscriptions",
+      "type": "array"
+    },
+    "ui_schema_version": {
+      "default": 1,
+      "minimum": 1,
+      "title": "Ui Schema Version",
+      "type": "integer"
+    },
+    "version": {
+      "maxLength": 64,
+      "minLength": 5,
+      "title": "Version",
+      "type": "string"
+    }
+  },
+  "required": [
+    "id",
+    "name",
+    "version",
+    "publisher",
+    "host_api",
+    "image_digest"
+  ],
+  "title": "PluginManifest",
+  "type": "object"
+}

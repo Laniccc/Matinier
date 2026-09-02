@@ -1,0 +1,89 @@
+name: Agent quality gates
+
+on:
+  push:
+  pull_request:
+
+permissions:
+  contents: read
+
+jobs:
+  backend-and-evals:
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@v4
+      - uses: astral-sh/setup-uv@v7
+        with:
+          version: "0.8.15"
+          enable-cache: true
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - name: Install locked backend dependencies
+        working-directory: backend
+        run: uv sync --frozen --dev
+      - name: Run backend tests and Fast/Action profile guard
+        working-directory: backend
+        run: |
+          uv run pytest -q -p no:cacheprovider
+          uv run pytest tests/test_tool_profile_policy.py -q -p no:cacheprovider
+      - name: Run 12-case durable Trace smoke
+        working-directory: backend
+        run: >-
+          uv run python -m app.evals.cli
+          --suite evals/cases/meeting_agent_product_v1.jsonl
+          --provider scripted
+          --trials 1
+          --seed 20260901
+          --require-complete-trace
+          --output-dir ../reports/ci-smoke
+      - name: Run local-media full-chain Trace smoke
+        working-directory: backend
+        run: >-
+          uv run python ../scripts/run_meeting_agent_full_chain_eval.py
+          --output-dir ../reports/ci-full-chain
+      - name: Verify all smoke traces exist
+        run: |
+          test "$(find reports/ci-smoke/traces -type f -name '*.json' | wc -l)" -eq 12
+          test "$(find reports/ci-full-chain/full-chain-traces -type f -name '*.json' | wc -l)" -eq 2
+      - name: Upload evaluation evidence
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: meeting-agent-ci-smoke
+          if-no-files-found: error
+          path: |
+            reports/ci-smoke/summary.json
+            reports/ci-smoke/summary.md
+            reports/ci-smoke/metrics.json
+            reports/ci-smoke/trace-index.jsonl
+            reports/ci-smoke/traces/
+            reports/ci-full-chain/full-chain-summary.json
+            reports/ci-full-chain/full-chain-summary.md
+            reports/ci-full-chain/full-chain-traces/
+
+  frontend:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "22"
+          cache: pnpm
+          cache-dependency-path: frontend/pnpm-lock.yaml
+      - name: Enable pnpm from packageManager
+        run: corepack enable
+      - name: Install locked frontend dependencies
+        working-directory: frontend
+        run: pnpm install --frozen-lockfile
+      - name: Test
+        working-directory: frontend
+        run: pnpm test
+      - name: Typecheck
+        working-directory: frontend
+        run: pnpm typecheck
+      - name: Build
+        working-directory: frontend
+        run: pnpm build

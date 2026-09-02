@@ -1,0 +1,1363 @@
+{
+  "$defs": {
+    "BadgeComponent": {
+      "additionalProperties": false,
+      "properties": {
+        "id": {
+          "pattern": "^[A-Za-z][A-Za-z0-9_.-]{0,127}$",
+          "title": "Id",
+          "type": "string"
+        },
+        "text": {
+          "maxLength": 200,
+          "minLength": 1,
+          "title": "Text",
+          "type": "string"
+        },
+        "tone": {
+          "default": "neutral",
+          "enum": [
+            "neutral",
+            "info",
+            "success",
+            "warning",
+            "danger"
+          ],
+          "title": "Tone",
+          "type": "string"
+        },
+        "type": {
+          "const": "badge",
+          "title": "Type",
+          "type": "string"
+        }
+      },
+      "required": [
+        "id",
+        "type",
+        "text"
+      ],
+      "title": "BadgeComponent",
+      "type": "object"
+    },
+    "ButtonComponent": {
+      "additionalProperties": false,
+      "properties": {
+        "action_id": {
+          "pattern": "^[A-Za-z][A-Za-z0-9_.-]{0,127}$",
+          "title": "Action Id",
+          "type": "string"
+        },
+        "id": {
+          "pattern": "^[A-Za-z][A-Za-z0-9_.-]{0,127}$",
+          "title": "Id",
+          "type": "string"
+        },
+        "label": {
+          "maxLength": 200,
+          "minLength": 1,
+          "title": "Label",
+          "type": "string"
+        },
+        "tone": {
+          "default": "neutral",
+          "enum": [
+            "neutral",
+            "primary",
+            "danger"
+          ],
+          "title": "Tone",
+          "type": "string"
+        },
+        "type": {
+          "const": "button",
+          "title": "Type",
+          "type": "string"
+        }
+      },
+      "required": [
+        "id",
+        "type",
+        "label",
+        "action_id"
+      ],
+      "title": "ButtonComponent",
+      "type": "object"
+    },
+    "CardComponent": {
+      "additionalProperties": false,
+      "properties": {
+        "children": {
+          "default": [],
+          "items": {
+            "discriminator": {
+              "mapping": {
+                "badge": "#/$defs/BadgeComponent",
+                "button": "#/$defs/ButtonComponent",
+                "card": "#/$defs/CardComponent",
+                "checkbox": "#/$defs/CheckboxComponent",
+                "confirmation": "#/$defs/ConfirmationComponent",
+                "empty_state": "#/$defs/EmptyStateComponent",
+                "error_state": "#/$defs/ErrorStateComponent",
+                "input": "#/$defs/InputComponent",
+                "list": "#/$defs/ListComponent",
+                "media_anchor": "#/$defs/MediaAnchorComponent",
+                "metric": "#/$defs/MetricComponent",
+                "progress": "#/$defs/ProgressComponent",
+                "safe_markdown": "#/$defs/SafeMarkdownComponent",
+                "section": "#/$defs/SectionComponent",
+                "select": "#/$defs/SelectComponent",
+                "table": "#/$defs/TableComponent",
+                "tabs": "#/$defs/TabsComponent",
+                "text": "#/$defs/TextComponent",
+                "textarea": "#/$defs/TextareaComponent",
+                "timeline": "#/$defs/TimelineComponent"
+              },
+              "propertyName": "type"
+            },
+            "oneOf": [
+              {
+                "$ref": "#/$defs/TextComponent"
+              },
+              {
+                "$ref": "#/$defs/SafeMarkdownComponent"
+              },
+              {
+                "$ref": "#/$defs/CardComponent"
+              },
+              {
+                "$ref": "#/$defs/SectionComponent"
+              },
+              {
+                "$ref": "#/$defs/TabsComponent"
+              },
+              {
+                "$ref": "#/$defs/ListComponent"
+              },
+              {
+                "$ref": "#/$defs/TableComponent"
+              },
+              {
+                "$ref": "#/$defs/TimelineComponent"
+              },
+              {
+                "$ref": "#/$defs/MediaAnchorComponent"
+              },
+              {
+                "$ref": "#/$defs/BadgeComponent"
+              },
+              {
+                "$ref": "#/$defs/MetricComponent"
+              },
+              {
+                "$ref": "#/$defs/ProgressComponent"
+              },
+              {
+                "$ref": "#/$defs/InputComponent"
+              },
+              {
+                "$ref": "#/$defs/TextareaComponent"
+              },
+              {
+                "$ref": "#/$defs/SelectComponent"
+              },
+              {
+                "$ref": "#/$defs/CheckboxComponent"
+              },
+              {
+                "$ref": "#/$defs/ButtonComponent"
+              },
+              {
+                "$ref": "#/$defs/ConfirmationComponent"
+              },
+              {
+                "$ref": "#/$defs/EmptyStateComponent"
+              },
+              {
+                "$ref": "#/$defs/ErrorStateComponent"
+              }
+            ]
+          },
+          "maxItems": 500,
+          "title": "Children",
+          "type": "array"
+        },
+        "id": {
+          "pattern": "^[A-Za-z][A-Za-z0-9_.-]{0,127}$",
+          "title": "Id",
+          "type": "string"
+        },
+        "title": {
+          "anyOf": [
+            {
+              "maxLength": 500,
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Title"
+        },
+        "type": {
+          "const": "card",
+          "title": "Type",
+          "type": "string"
+        }
+      },
+      "required": [
+        "id",
+        "type"
+      ],
+      "title": "CardComponent",
+      "type": "object"
+    },
+    "CheckboxComponent": {
+      "additionalProperties": false,
+      "properties": {
+        "checked": {
+          "default": false,
+          "title": "Checked",
+          "type": "boolean"
+        },
+        "id": {
+          "pattern": "^[A-Za-z][A-Za-z0-9_.-]{0,127}$",
+          "title": "Id",
+          "type": "string"
+        },
+        "label": {
+          "maxLength": 500,
+          "minLength": 1,
+          "title": "Label",
+          "type": "string"
+        },
+        "name": {
+          "pattern": "^[A-Za-z][A-Za-z0-9_.-]{0,127}$",
+          "title": "Name",
+          "type": "string"
+        },
+        "type": {
+          "const": "checkbox",
+          "title": "Type",
+          "type": "string"
+        }
+      },
+      "required": [
+        "id",
+        "type",
+        "name",
+        "label"
+      ],
+      "title": "CheckboxComponent",
+      "type": "object"
+    },
+    "ConfirmationComponent": {
+      "additionalProperties": false,
+      "properties": {
+        "body": {
+          "maxLength": 4000,
+          "minLength": 1,
+          "title": "Body",
+          "type": "string"
+        },
+        "cancel_action_id": {
+          "anyOf": [
+            {
+              "pattern": "^[A-Za-z][A-Za-z0-9_.-]{0,127}$",
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Cancel Action Id"
+        },
+        "confirm_action_id": {
+          "pattern": "^[A-Za-z][A-Za-z0-9_.-]{0,127}$",
+          "title": "Confirm Action Id",
+          "type": "string"
+        },
+        "id": {
+          "pattern": "^[A-Za-z][A-Za-z0-9_.-]{0,127}$",
+          "title": "Id",
+          "type": "string"
+        },
+        "title": {
+          "maxLength": 500,
+          "minLength": 1,
+          "title": "Title",
+          "type": "string"
+        },
+        "type": {
+          "const": "confirmation",
+          "title": "Type",
+          "type": "string"
+        }
+      },
+      "required": [
+        "id",
+        "type",
+        "title",
+        "body",
+        "confirm_action_id"
+      ],
+      "title": "ConfirmationComponent",
+      "type": "object"
+    },
+    "EmptyStateComponent": {
+      "additionalProperties": false,
+      "properties": {
+        "id": {
+          "pattern": "^[A-Za-z][A-Za-z0-9_.-]{0,127}$",
+          "title": "Id",
+          "type": "string"
+        },
+        "message": {
+          "anyOf": [
+            {
+              "maxLength": 4000,
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Message"
+        },
+        "title": {
+          "maxLength": 500,
+          "minLength": 1,
+          "title": "Title",
+          "type": "string"
+        },
+        "type": {
+          "const": "empty_state",
+          "title": "Type",
+          "type": "string"
+        }
+      },
+      "required": [
+        "id",
+        "type",
+        "title"
+      ],
+      "title": "EmptyStateComponent",
+      "type": "object"
+    },
+    "ErrorStateComponent": {
+      "additionalProperties": false,
+      "properties": {
+        "id": {
+          "pattern": "^[A-Za-z][A-Za-z0-9_.-]{0,127}$",
+          "title": "Id",
+          "type": "string"
+        },
+        "message": {
+          "maxLength": 4000,
+          "minLength": 1,
+          "title": "Message",
+          "type": "string"
+        },
+        "title": {
+          "maxLength": 500,
+          "minLength": 1,
+          "title": "Title",
+          "type": "string"
+        },
+        "type": {
+          "const": "error_state",
+          "title": "Type",
+          "type": "string"
+        }
+      },
+      "required": [
+        "id",
+        "type",
+        "title",
+        "message"
+      ],
+      "title": "ErrorStateComponent",
+      "type": "object"
+    },
+    "InputComponent": {
+      "additionalProperties": false,
+      "properties": {
+        "id": {
+          "pattern": "^[A-Za-z][A-Za-z0-9_.-]{0,127}$",
+          "title": "Id",
+          "type": "string"
+        },
+        "label": {
+          "maxLength": 200,
+          "minLength": 1,
+          "title": "Label",
+          "type": "string"
+        },
+        "name": {
+          "pattern": "^[A-Za-z][A-Za-z0-9_.-]{0,127}$",
+          "title": "Name",
+          "type": "string"
+        },
+        "placeholder": {
+          "anyOf": [
+            {
+              "maxLength": 500,
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Placeholder"
+        },
+        "type": {
+          "const": "input",
+          "title": "Type",
+          "type": "string"
+        }
+      },
+      "required": [
+        "id",
+        "type",
+        "name",
+        "label"
+      ],
+      "title": "InputComponent",
+      "type": "object"
+    },
+    "ListComponent": {
+      "additionalProperties": false,
+      "properties": {
+        "id": {
+          "pattern": "^[A-Za-z][A-Za-z0-9_.-]{0,127}$",
+          "title": "Id",
+          "type": "string"
+        },
+        "items": {
+          "default": [],
+          "items": {
+            "$ref": "#/$defs/ListItem"
+          },
+          "maxItems": 200,
+          "title": "Items",
+          "type": "array"
+        },
+        "type": {
+          "const": "list",
+          "title": "Type",
+          "type": "string"
+        }
+      },
+      "required": [
+        "id",
+        "type"
+      ],
+      "title": "ListComponent",
+      "type": "object"
+    },
+    "ListItem": {
+      "additionalProperties": false,
+      "properties": {
+        "id": {
+          "pattern": "^[A-Za-z][A-Za-z0-9_.-]{0,127}$",
+          "title": "Id",
+          "type": "string"
+        },
+        "primary": {
+          "maxLength": 2000,
+          "minLength": 1,
+          "title": "Primary",
+          "type": "string"
+        },
+        "secondary": {
+          "anyOf": [
+            {
+              "maxLength": 4000,
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Secondary"
+        }
+      },
+      "required": [
+        "id",
+        "primary"
+      ],
+      "title": "ListItem",
+      "type": "object"
+    },
+    "MediaAnchorComponent": {
+      "additionalProperties": false,
+      "properties": {
+        "id": {
+          "pattern": "^[A-Za-z][A-Za-z0-9_.-]{0,127}$",
+          "title": "Id",
+          "type": "string"
+        },
+        "label": {
+          "maxLength": 500,
+          "minLength": 1,
+          "title": "Label",
+          "type": "string"
+        },
+        "media_time_ms": {
+          "minimum": 0,
+          "title": "Media Time Ms",
+          "type": "integer"
+        },
+        "type": {
+          "const": "media_anchor",
+          "title": "Type",
+          "type": "string"
+        }
+      },
+      "required": [
+        "id",
+        "type",
+        "media_time_ms",
+        "label"
+      ],
+      "title": "MediaAnchorComponent",
+      "type": "object"
+    },
+    "MetricComponent": {
+      "additionalProperties": false,
+      "properties": {
+        "detail": {
+          "anyOf": [
+            {
+              "maxLength": 1000,
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Detail"
+        },
+        "id": {
+          "pattern": "^[A-Za-z][A-Za-z0-9_.-]{0,127}$",
+          "title": "Id",
+          "type": "string"
+        },
+        "label": {
+          "maxLength": 200,
+          "minLength": 1,
+          "title": "Label",
+          "type": "string"
+        },
+        "type": {
+          "const": "metric",
+          "title": "Type",
+          "type": "string"
+        },
+        "value": {
+          "maxLength": 500,
+          "minLength": 1,
+          "title": "Value",
+          "type": "string"
+        }
+      },
+      "required": [
+        "id",
+        "type",
+        "label",
+        "value"
+      ],
+      "title": "MetricComponent",
+      "type": "object"
+    },
+    "ProgressComponent": {
+      "additionalProperties": false,
+      "properties": {
+        "id": {
+          "pattern": "^[A-Za-z][A-Za-z0-9_.-]{0,127}$",
+          "title": "Id",
+          "type": "string"
+        },
+        "label": {
+          "maxLength": 200,
+          "minLength": 1,
+          "title": "Label",
+          "type": "string"
+        },
+        "type": {
+          "const": "progress",
+          "title": "Type",
+          "type": "string"
+        },
+        "value": {
+          "maximum": 100,
+          "minimum": 0,
+          "title": "Value",
+          "type": "number"
+        }
+      },
+      "required": [
+        "id",
+        "type",
+        "label",
+        "value"
+      ],
+      "title": "ProgressComponent",
+      "type": "object"
+    },
+    "SafeMarkdownComponent": {
+      "additionalProperties": false,
+      "properties": {
+        "id": {
+          "pattern": "^[A-Za-z][A-Za-z0-9_.-]{0,127}$",
+          "title": "Id",
+          "type": "string"
+        },
+        "markdown": {
+          "maxLength": 32000,
+          "title": "Markdown",
+          "type": "string"
+        },
+        "type": {
+          "const": "safe_markdown",
+          "title": "Type",
+          "type": "string"
+        }
+      },
+      "required": [
+        "id",
+        "type",
+        "markdown"
+      ],
+      "title": "SafeMarkdownComponent",
+      "type": "object"
+    },
+    "SectionComponent": {
+      "additionalProperties": false,
+      "properties": {
+        "children": {
+          "default": [],
+          "items": {
+            "discriminator": {
+              "mapping": {
+                "badge": "#/$defs/BadgeComponent",
+                "button": "#/$defs/ButtonComponent",
+                "card": "#/$defs/CardComponent",
+                "checkbox": "#/$defs/CheckboxComponent",
+                "confirmation": "#/$defs/ConfirmationComponent",
+                "empty_state": "#/$defs/EmptyStateComponent",
+                "error_state": "#/$defs/ErrorStateComponent",
+                "input": "#/$defs/InputComponent",
+                "list": "#/$defs/ListComponent",
+                "media_anchor": "#/$defs/MediaAnchorComponent",
+                "metric": "#/$defs/MetricComponent",
+                "progress": "#/$defs/ProgressComponent",
+                "safe_markdown": "#/$defs/SafeMarkdownComponent",
+                "section": "#/$defs/SectionComponent",
+                "select": "#/$defs/SelectComponent",
+                "table": "#/$defs/TableComponent",
+                "tabs": "#/$defs/TabsComponent",
+                "text": "#/$defs/TextComponent",
+                "textarea": "#/$defs/TextareaComponent",
+                "timeline": "#/$defs/TimelineComponent"
+              },
+              "propertyName": "type"
+            },
+            "oneOf": [
+              {
+                "$ref": "#/$defs/TextComponent"
+              },
+              {
+                "$ref": "#/$defs/SafeMarkdownComponent"
+              },
+              {
+                "$ref": "#/$defs/CardComponent"
+              },
+              {
+                "$ref": "#/$defs/SectionComponent"
+              },
+              {
+                "$ref": "#/$defs/TabsComponent"
+              },
+              {
+                "$ref": "#/$defs/ListComponent"
+              },
+              {
+                "$ref": "#/$defs/TableComponent"
+              },
+              {
+                "$ref": "#/$defs/TimelineComponent"
+              },
+              {
+                "$ref": "#/$defs/MediaAnchorComponent"
+              },
+              {
+                "$ref": "#/$defs/BadgeComponent"
+              },
+              {
+                "$ref": "#/$defs/MetricComponent"
+              },
+              {
+                "$ref": "#/$defs/ProgressComponent"
+              },
+              {
+                "$ref": "#/$defs/InputComponent"
+              },
+              {
+                "$ref": "#/$defs/TextareaComponent"
+              },
+              {
+                "$ref": "#/$defs/SelectComponent"
+              },
+              {
+                "$ref": "#/$defs/CheckboxComponent"
+              },
+              {
+                "$ref": "#/$defs/ButtonComponent"
+              },
+              {
+                "$ref": "#/$defs/ConfirmationComponent"
+              },
+              {
+                "$ref": "#/$defs/EmptyStateComponent"
+              },
+              {
+                "$ref": "#/$defs/ErrorStateComponent"
+              }
+            ]
+          },
+          "maxItems": 500,
+          "title": "Children",
+          "type": "array"
+        },
+        "id": {
+          "pattern": "^[A-Za-z][A-Za-z0-9_.-]{0,127}$",
+          "title": "Id",
+          "type": "string"
+        },
+        "title": {
+          "maxLength": 500,
+          "title": "Title",
+          "type": "string"
+        },
+        "type": {
+          "const": "section",
+          "title": "Type",
+          "type": "string"
+        }
+      },
+      "required": [
+        "id",
+        "type",
+        "title"
+      ],
+      "title": "SectionComponent",
+      "type": "object"
+    },
+    "SelectComponent": {
+      "additionalProperties": false,
+      "properties": {
+        "id": {
+          "pattern": "^[A-Za-z][A-Za-z0-9_.-]{0,127}$",
+          "title": "Id",
+          "type": "string"
+        },
+        "label": {
+          "maxLength": 200,
+          "minLength": 1,
+          "title": "Label",
+          "type": "string"
+        },
+        "name": {
+          "pattern": "^[A-Za-z][A-Za-z0-9_.-]{0,127}$",
+          "title": "Name",
+          "type": "string"
+        },
+        "options": {
+          "items": {
+            "$ref": "#/$defs/SelectOption"
+          },
+          "maxItems": 50,
+          "minItems": 1,
+          "title": "Options",
+          "type": "array"
+        },
+        "type": {
+          "const": "select",
+          "title": "Type",
+          "type": "string"
+        }
+      },
+      "required": [
+        "id",
+        "type",
+        "name",
+        "label",
+        "options"
+      ],
+      "title": "SelectComponent",
+      "type": "object"
+    },
+    "SelectOption": {
+      "additionalProperties": false,
+      "properties": {
+        "id": {
+          "pattern": "^[A-Za-z][A-Za-z0-9_.-]{0,127}$",
+          "title": "Id",
+          "type": "string"
+        },
+        "label": {
+          "maxLength": 200,
+          "minLength": 1,
+          "title": "Label",
+          "type": "string"
+        },
+        "value": {
+          "maxLength": 500,
+          "title": "Value",
+          "type": "string"
+        }
+      },
+      "required": [
+        "id",
+        "label",
+        "value"
+      ],
+      "title": "SelectOption",
+      "type": "object"
+    },
+    "TabItem": {
+      "additionalProperties": false,
+      "properties": {
+        "children": {
+          "default": [],
+          "items": {
+            "discriminator": {
+              "mapping": {
+                "badge": "#/$defs/BadgeComponent",
+                "button": "#/$defs/ButtonComponent",
+                "card": "#/$defs/CardComponent",
+                "checkbox": "#/$defs/CheckboxComponent",
+                "confirmation": "#/$defs/ConfirmationComponent",
+                "empty_state": "#/$defs/EmptyStateComponent",
+                "error_state": "#/$defs/ErrorStateComponent",
+                "input": "#/$defs/InputComponent",
+                "list": "#/$defs/ListComponent",
+                "media_anchor": "#/$defs/MediaAnchorComponent",
+                "metric": "#/$defs/MetricComponent",
+                "progress": "#/$defs/ProgressComponent",
+                "safe_markdown": "#/$defs/SafeMarkdownComponent",
+                "section": "#/$defs/SectionComponent",
+                "select": "#/$defs/SelectComponent",
+                "table": "#/$defs/TableComponent",
+                "tabs": "#/$defs/TabsComponent",
+                "text": "#/$defs/TextComponent",
+                "textarea": "#/$defs/TextareaComponent",
+                "timeline": "#/$defs/TimelineComponent"
+              },
+              "propertyName": "type"
+            },
+            "oneOf": [
+              {
+                "$ref": "#/$defs/TextComponent"
+              },
+              {
+                "$ref": "#/$defs/SafeMarkdownComponent"
+              },
+              {
+                "$ref": "#/$defs/CardComponent"
+              },
+              {
+                "$ref": "#/$defs/SectionComponent"
+              },
+              {
+                "$ref": "#/$defs/TabsComponent"
+              },
+              {
+                "$ref": "#/$defs/ListComponent"
+              },
+              {
+                "$ref": "#/$defs/TableComponent"
+              },
+              {
+                "$ref": "#/$defs/TimelineComponent"
+              },
+              {
+                "$ref": "#/$defs/MediaAnchorComponent"
+              },
+              {
+                "$ref": "#/$defs/BadgeComponent"
+              },
+              {
+                "$ref": "#/$defs/MetricComponent"
+              },
+              {
+                "$ref": "#/$defs/ProgressComponent"
+              },
+              {
+                "$ref": "#/$defs/InputComponent"
+              },
+              {
+                "$ref": "#/$defs/TextareaComponent"
+              },
+              {
+                "$ref": "#/$defs/SelectComponent"
+              },
+              {
+                "$ref": "#/$defs/CheckboxComponent"
+              },
+              {
+                "$ref": "#/$defs/ButtonComponent"
+              },
+              {
+                "$ref": "#/$defs/ConfirmationComponent"
+              },
+              {
+                "$ref": "#/$defs/EmptyStateComponent"
+              },
+              {
+                "$ref": "#/$defs/ErrorStateComponent"
+              }
+            ]
+          },
+          "maxItems": 500,
+          "title": "Children",
+          "type": "array"
+        },
+        "id": {
+          "pattern": "^[A-Za-z][A-Za-z0-9_.-]{0,127}$",
+          "title": "Id",
+          "type": "string"
+        },
+        "label": {
+          "maxLength": 200,
+          "minLength": 1,
+          "title": "Label",
+          "type": "string"
+        }
+      },
+      "required": [
+        "id",
+        "label"
+      ],
+      "title": "TabItem",
+      "type": "object"
+    },
+    "TableColumn": {
+      "additionalProperties": false,
+      "properties": {
+        "id": {
+          "pattern": "^[A-Za-z][A-Za-z0-9_.-]{0,127}$",
+          "title": "Id",
+          "type": "string"
+        },
+        "label": {
+          "maxLength": 200,
+          "minLength": 1,
+          "title": "Label",
+          "type": "string"
+        }
+      },
+      "required": [
+        "id",
+        "label"
+      ],
+      "title": "TableColumn",
+      "type": "object"
+    },
+    "TableComponent": {
+      "additionalProperties": false,
+      "properties": {
+        "columns": {
+          "items": {
+            "$ref": "#/$defs/TableColumn"
+          },
+          "maxItems": 20,
+          "minItems": 1,
+          "title": "Columns",
+          "type": "array"
+        },
+        "id": {
+          "pattern": "^[A-Za-z][A-Za-z0-9_.-]{0,127}$",
+          "title": "Id",
+          "type": "string"
+        },
+        "rows": {
+          "default": [],
+          "items": {
+            "additionalProperties": {
+              "type": "string"
+            },
+            "type": "object"
+          },
+          "maxItems": 100,
+          "title": "Rows",
+          "type": "array"
+        },
+        "type": {
+          "const": "table",
+          "title": "Type",
+          "type": "string"
+        }
+      },
+      "required": [
+        "id",
+        "type",
+        "columns"
+      ],
+      "title": "TableComponent",
+      "type": "object"
+    },
+    "TabsComponent": {
+      "additionalProperties": false,
+      "properties": {
+        "id": {
+          "pattern": "^[A-Za-z][A-Za-z0-9_.-]{0,127}$",
+          "title": "Id",
+          "type": "string"
+        },
+        "tabs": {
+          "items": {
+            "$ref": "#/$defs/TabItem"
+          },
+          "maxItems": 20,
+          "minItems": 1,
+          "title": "Tabs",
+          "type": "array"
+        },
+        "type": {
+          "const": "tabs",
+          "title": "Type",
+          "type": "string"
+        }
+      },
+      "required": [
+        "id",
+        "type",
+        "tabs"
+      ],
+      "title": "TabsComponent",
+      "type": "object"
+    },
+    "TextComponent": {
+      "additionalProperties": false,
+      "properties": {
+        "id": {
+          "pattern": "^[A-Za-z][A-Za-z0-9_.-]{0,127}$",
+          "title": "Id",
+          "type": "string"
+        },
+        "text": {
+          "maxLength": 32000,
+          "title": "Text",
+          "type": "string"
+        },
+        "type": {
+          "const": "text",
+          "title": "Type",
+          "type": "string"
+        }
+      },
+      "required": [
+        "id",
+        "type",
+        "text"
+      ],
+      "title": "TextComponent",
+      "type": "object"
+    },
+    "TextareaComponent": {
+      "additionalProperties": false,
+      "properties": {
+        "id": {
+          "pattern": "^[A-Za-z][A-Za-z0-9_.-]{0,127}$",
+          "title": "Id",
+          "type": "string"
+        },
+        "label": {
+          "maxLength": 200,
+          "minLength": 1,
+          "title": "Label",
+          "type": "string"
+        },
+        "name": {
+          "pattern": "^[A-Za-z][A-Za-z0-9_.-]{0,127}$",
+          "title": "Name",
+          "type": "string"
+        },
+        "placeholder": {
+          "anyOf": [
+            {
+              "maxLength": 500,
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Placeholder"
+        },
+        "rows": {
+          "default": 4,
+          "maximum": 20,
+          "minimum": 2,
+          "title": "Rows",
+          "type": "integer"
+        },
+        "type": {
+          "const": "textarea",
+          "title": "Type",
+          "type": "string"
+        }
+      },
+      "required": [
+        "id",
+        "type",
+        "name",
+        "label"
+      ],
+      "title": "TextareaComponent",
+      "type": "object"
+    },
+    "TimelineComponent": {
+      "additionalProperties": false,
+      "properties": {
+        "id": {
+          "pattern": "^[A-Za-z][A-Za-z0-9_.-]{0,127}$",
+          "title": "Id",
+          "type": "string"
+        },
+        "items": {
+          "default": [],
+          "items": {
+            "$ref": "#/$defs/TimelineItem"
+          },
+          "maxItems": 200,
+          "title": "Items",
+          "type": "array"
+        },
+        "type": {
+          "const": "timeline",
+          "title": "Type",
+          "type": "string"
+        }
+      },
+      "required": [
+        "id",
+        "type"
+      ],
+      "title": "TimelineComponent",
+      "type": "object"
+    },
+    "TimelineItem": {
+      "additionalProperties": false,
+      "properties": {
+        "body": {
+          "anyOf": [
+            {
+              "maxLength": 4000,
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Body"
+        },
+        "id": {
+          "pattern": "^[A-Za-z][A-Za-z0-9_.-]{0,127}$",
+          "title": "Id",
+          "type": "string"
+        },
+        "time_ms": {
+          "minimum": 0,
+          "title": "Time Ms",
+          "type": "integer"
+        },
+        "title": {
+          "maxLength": 500,
+          "minLength": 1,
+          "title": "Title",
+          "type": "string"
+        }
+      },
+      "required": [
+        "id",
+        "time_ms",
+        "title"
+      ],
+      "title": "TimelineItem",
+      "type": "object"
+    },
+    "UIViewAction": {
+      "additionalProperties": false,
+      "properties": {
+        "command": {
+          "pattern": "^[a-z][a-z0-9_-]{0,63}$",
+          "title": "Command",
+          "type": "string"
+        },
+        "id": {
+          "pattern": "^[A-Za-z][A-Za-z0-9_.-]{0,127}$",
+          "title": "Id",
+          "type": "string"
+        },
+        "kind": {
+          "const": "command",
+          "title": "Kind",
+          "type": "string"
+        }
+      },
+      "required": [
+        "id",
+        "kind",
+        "command"
+      ],
+      "title": "UIViewAction",
+      "type": "object"
+    }
+  },
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "additionalProperties": false,
+  "properties": {
+    "actions": {
+      "default": [],
+      "items": {
+        "$ref": "#/$defs/UIViewAction"
+      },
+      "maxItems": 32,
+      "title": "Actions",
+      "type": "array"
+    },
+    "root": {
+      "discriminator": {
+        "mapping": {
+          "badge": "#/$defs/BadgeComponent",
+          "button": "#/$defs/ButtonComponent",
+          "card": "#/$defs/CardComponent",
+          "checkbox": "#/$defs/CheckboxComponent",
+          "confirmation": "#/$defs/ConfirmationComponent",
+          "empty_state": "#/$defs/EmptyStateComponent",
+          "error_state": "#/$defs/ErrorStateComponent",
+          "input": "#/$defs/InputComponent",
+          "list": "#/$defs/ListComponent",
+          "media_anchor": "#/$defs/MediaAnchorComponent",
+          "metric": "#/$defs/MetricComponent",
+          "progress": "#/$defs/ProgressComponent",
+          "safe_markdown": "#/$defs/SafeMarkdownComponent",
+          "section": "#/$defs/SectionComponent",
+          "select": "#/$defs/SelectComponent",
+          "table": "#/$defs/TableComponent",
+          "tabs": "#/$defs/TabsComponent",
+          "text": "#/$defs/TextComponent",
+          "textarea": "#/$defs/TextareaComponent",
+          "timeline": "#/$defs/TimelineComponent"
+        },
+        "propertyName": "type"
+      },
+      "oneOf": [
+        {
+          "$ref": "#/$defs/TextComponent"
+        },
+        {
+          "$ref": "#/$defs/SafeMarkdownComponent"
+        },
+        {
+          "$ref": "#/$defs/CardComponent"
+        },
+        {
+          "$ref": "#/$defs/SectionComponent"
+        },
+        {
+          "$ref": "#/$defs/TabsComponent"
+        },
+        {
+          "$ref": "#/$defs/ListComponent"
+        },
+        {
+          "$ref": "#/$defs/TableComponent"
+        },
+        {
+          "$ref": "#/$defs/TimelineComponent"
+        },
+        {
+          "$ref": "#/$defs/MediaAnchorComponent"
+        },
+        {
+          "$ref": "#/$defs/BadgeComponent"
+        },
+        {
+          "$ref": "#/$defs/MetricComponent"
+        },
+        {
+          "$ref": "#/$defs/ProgressComponent"
+        },
+        {
+          "$ref": "#/$defs/InputComponent"
+        },
+        {
+          "$ref": "#/$defs/TextareaComponent"
+        },
+        {
+          "$ref": "#/$defs/SelectComponent"
+        },
+        {
+          "$ref": "#/$defs/CheckboxComponent"
+        },
+        {
+          "$ref": "#/$defs/ButtonComponent"
+        },
+        {
+          "$ref": "#/$defs/ConfirmationComponent"
+        },
+        {
+          "$ref": "#/$defs/EmptyStateComponent"
+        },
+        {
+          "$ref": "#/$defs/ErrorStateComponent"
+        }
+      ],
+      "title": "Root"
+    },
+    "schema_version": {
+      "const": 1,
+      "title": "Schema Version",
+      "type": "integer"
+    },
+    "surface": {
+      "enum": [
+        "panel",
+        "overlay"
+      ],
+      "title": "Surface",
+      "type": "string"
+    },
+    "view_id": {
+      "pattern": "^[A-Za-z][A-Za-z0-9_.-]{0,127}$",
+      "title": "View Id",
+      "type": "string"
+    },
+    "view_version": {
+      "minimum": 1,
+      "title": "View Version",
+      "type": "integer"
+    }
+  },
+  "required": [
+    "schema_version",
+    "surface",
+    "view_id",
+    "view_version",
+    "root"
+  ],
+  "title": "PluginUIViewDocument",
+  "type": "object"
+}

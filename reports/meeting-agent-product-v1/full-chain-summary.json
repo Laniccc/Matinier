@@ -1,0 +1,240 @@
+{
+  "metrics": [
+    {
+      "actual": 50,
+      "metric": "input.decoded_frame_count",
+      "result": "PASS",
+      "sample_count": 2,
+      "scope": "local_media_diagnostic",
+      "target": ">0"
+    },
+    {
+      "actual": 1.0,
+      "metric": "input.audio_duration_seconds",
+      "result": "PASS",
+      "sample_count": 2,
+      "scope": "local_media_diagnostic",
+      "target": ">0"
+    },
+    {
+      "actual": 0,
+      "metric": "input.dropped_frames",
+      "result": "PASS",
+      "sample_count": 2,
+      "scope": "local_media_diagnostic",
+      "target": 0
+    },
+    {
+      "actual": 1,
+      "metric": "caption.final_count",
+      "result": "PASS",
+      "sample_count": 2,
+      "scope": "local_media_diagnostic",
+      "target": ">=1"
+    },
+    {
+      "actual": 0,
+      "metric": "caption.provider_error_count",
+      "result": "PASS",
+      "sample_count": 2,
+      "scope": "local_media_diagnostic",
+      "target": 0
+    },
+    {
+      "actual": 100.0,
+      "metric": "caption.final_to_evidence_rate_percent",
+      "result": "PASS",
+      "sample_count": 2,
+      "scope": "local_media_diagnostic",
+      "target": 100
+    },
+    {
+      "actual": 100.0,
+      "metric": "connection.evidence_to_agent_trace_join_rate_percent",
+      "result": "PASS",
+      "sample_count": 2,
+      "scope": "local_media_diagnostic",
+      "target": 100
+    },
+    {
+      "actual": 100.0,
+      "metric": "agent.route_terminal_accuracy_percent",
+      "result": "PASS",
+      "sample_count": 2,
+      "scope": "local_media_diagnostic",
+      "target": 100
+    },
+    {
+      "actual": 100.0,
+      "metric": "agent.trace_integrity_percent",
+      "result": "PASS",
+      "sample_count": 2,
+      "scope": "local_media_diagnostic",
+      "target": 100
+    },
+    {
+      "actual": 0,
+      "metric": "safety.unauthorized_write_count",
+      "result": "PASS",
+      "sample_count": 2,
+      "scope": "local_media_diagnostic",
+      "target": 0
+    },
+    {
+      "actual": 0,
+      "metric": "safety.duplicate_task_count",
+      "result": "PASS",
+      "sample_count": 2,
+      "scope": "local_media_diagnostic",
+      "target": 0
+    },
+    {
+      "actual": 0,
+      "metric": "safety.unknown_direct_retry_count",
+      "result": "PASS",
+      "sample_count": 2,
+      "scope": "local_media_diagnostic",
+      "target": 0
+    },
+    {
+      "actual": 1,
+      "metric": "recovery.response_lost_create_call_count",
+      "result": "PASS",
+      "sample_count": 1,
+      "scope": "local_media_diagnostic",
+      "target": 1
+    },
+    {
+      "actual": 2,
+      "metric": "recovery.response_lost_reconcile_call_count",
+      "result": "PASS",
+      "sample_count": 1,
+      "scope": "local_media_diagnostic",
+      "target": ">=1"
+    },
+    {
+      "actual": 55.287,
+      "metric": "latency.audio_to_first_partial_ms",
+      "result": "PASS",
+      "sample_count": 2,
+      "scope": "local_media_diagnostic",
+      "target": "diagnostic_only"
+    },
+    {
+      "actual": 62.553,
+      "metric": "latency.audio_to_final_ms",
+      "result": "PASS",
+      "sample_count": 2,
+      "scope": "local_media_diagnostic",
+      "target": "diagnostic_only"
+    },
+    {
+      "actual": 59.031,
+      "metric": "latency.final_to_snapshot_ms",
+      "result": "PASS",
+      "sample_count": 2,
+      "scope": "local_media_diagnostic",
+      "target": "diagnostic_only"
+    },
+    {
+      "actual": 13.156,
+      "metric": "latency.snapshot_to_fast_terminal_or_handoff_ms",
+      "result": "PASS",
+      "sample_count": 2,
+      "scope": "local_media_diagnostic",
+      "target": "diagnostic_only"
+    },
+    {
+      "actual": 149.226,
+      "metric": "latency.handoff_to_action_terminal_ms",
+      "result": "PASS",
+      "sample_count": 2,
+      "scope": "local_media_diagnostic",
+      "target": "diagnostic_only"
+    },
+    {
+      "actual": 59.623,
+      "metric": "latency.reconcile_duration_ms",
+      "result": "PASS",
+      "sample_count": 1,
+      "scope": "local_media_diagnostic",
+      "target": "diagnostic_only"
+    }
+  ],
+  "overall_result": "PASS",
+  "passed_scenario_count": 2,
+  "provider_usage": "N/A (scripted providers do not expose tokens or cost)",
+  "scenario_count": 2,
+  "scenarios": [
+    {
+      "audio_duration_seconds": 1.0,
+      "audio_to_final_ms": 62.553,
+      "audio_to_first_partial_ms": 55.287,
+      "create_call_count": 1,
+      "decoded_frame_count": 50,
+      "dropped_frames": 0,
+      "duplicate_task_count": 0,
+      "evidence_to_agent_trace_join_rate_percent": 100.0,
+      "fast_status": "handed_off",
+      "final_count": 1,
+      "final_to_evidence_rate_percent": 100.0,
+      "final_to_snapshot_ms": 59.031,
+      "handoff_to_action_terminal_ms": 109.345,
+      "media_session_id": "media-normal",
+      "passed": true,
+      "projection_to_fast_handoff_ms": 73.515,
+      "provider_error_count": 0,
+      "reconcile_call_count": 0,
+      "reconcile_duration_ms": null,
+      "route": "fast_to_action_handoff",
+      "scenario": "normal",
+      "scenario_duration_ms": 383.998,
+      "scope": "local_media_diagnostic",
+      "session_id": "fc-normal",
+      "snapshot_to_fast_terminal_or_handoff_ms": 13.156,
+      "task_count": 1,
+      "terminal_status": "completed",
+      "trace_error_count": 0,
+      "trace_id": "f41afea0-8405-410e-93a3-1ffe6c67545a",
+      "trace_integrity_percent": 100.0,
+      "unauthorized_write_count": 0,
+      "unknown_direct_retry_count": 0
+    },
+    {
+      "audio_duration_seconds": 1.0,
+      "audio_to_final_ms": 54.769,
+      "audio_to_first_partial_ms": 48.106,
+      "create_call_count": 1,
+      "decoded_frame_count": 50,
+      "dropped_frames": 0,
+      "duplicate_task_count": 0,
+      "evidence_to_agent_trace_join_rate_percent": 100.0,
+      "fast_status": "handed_off",
+      "final_count": 1,
+      "final_to_evidence_rate_percent": 100.0,
+      "final_to_snapshot_ms": 45.798,
+      "handoff_to_action_terminal_ms": 149.226,
+      "media_session_id": "media-response_lost",
+      "passed": true,
+      "projection_to_fast_handoff_ms": 56.194,
+      "provider_error_count": 0,
+      "reconcile_call_count": 2,
+      "reconcile_duration_ms": 59.623,
+      "route": "fast_to_action_handoff",
+      "scenario": "response_lost",
+      "scenario_duration_ms": 323.051,
+      "scope": "local_media_diagnostic",
+      "session_id": "fc-response_lost",
+      "snapshot_to_fast_terminal_or_handoff_ms": 8.664,
+      "task_count": 1,
+      "terminal_status": "completed",
+      "trace_error_count": 0,
+      "trace_id": "a6b91e0d-ad0f-4be0-895e-8252e1faf1ec",
+      "trace_integrity_percent": 100.0,
+      "unauthorized_write_count": 0,
+      "unknown_direct_retry_count": 0
+    }
+  ],
+  "schema_version": 1,
+  "scope": "local_media_diagnostic"
+}

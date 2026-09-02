@@ -1,0 +1,55 @@
+# Secrets and local configuration
+.env
+.env.*
+!.env.example
+!frontend/.env.local.example
+*.pem
+*.key
+*.p12
+*.pfx
+
+# Python
+.tools/
+.local-backups/
+.pnpm-store/
+backend/.venv/
+backend/.pytest-tmp/
+backend/.pytest_cache/
+backend/**/__pycache__/
+*.py[cod]
+*.db
+*.sqlite
+*.sqlite3
+backend/data/*.db-*
+backend/data/acceptance/
+backend/data/backups/
+backend/data/plugins/
+backend/data/reports/*
+!backend/data/reports/.gitkeep
+backend/data/exports/*
+!backend/data/exports/.gitkeep
+backend/data/logs/*
+!backend/data/logs/.gitkeep
+backend/data/worker-health/*
+!backend/data/worker-health/.gitkeep
+
+# Node / Next.js
+frontend/node_modules/
+frontend/.next/
+frontend/.env.local
+frontend/*.tsbuildinfo
+
+# Local user inputs and generated CI artifacts
+files/
+data-migration-check/
+reports/ci-smoke/
+reports/ci-full-chain/
+
+# Editors and operating systems
+.DS_Store
+Thumbs.db
+.idea/
+.vscode/
+# Historical development launcher output; new runs use DATA_DIR/logs.
+.runtime/*
+!.runtime/.gitkeep

@@ -1,0 +1,4929 @@
+{
+  "inactive": {
+    "schema_version": 1,
+    "surface": "panel",
+    "view_id": "meeting-assistant",
+    "view_version": 1,
+    "root": {
+      "type": "section",
+      "id": "meeting",
+      "title": "私人会议助手",
+      "children": [
+        {
+          "type": "section",
+          "id": "analysis",
+          "title": "本次会议分析",
+          "children": [
+            {
+              "id": "n-1",
+              "type": "badge",
+              "text": "未启用本次分析",
+              "tone": "neutral"
+            },
+            {
+              "id": "n-2",
+              "type": "metric",
+              "label": "当前 Final",
+              "value": "已处理 0 / 0",
+              "detail": "待处理 0（不使用插件 ACK 计数）"
+            },
+            {
+              "id": "n-3",
+              "type": "progress",
+              "label": "当前字幕处理进度",
+              "value": 0
+            },
+            {
+              "id": "n-4",
+              "type": "text",
+              "text": "最近更新：尚无成功更新"
+            },
+            {
+              "id": "n-5",
+              "type": "button",
+              "label": "刷新状态",
+              "action_id": "refresh"
+            },
+            {
+              "id": "n-6",
+              "type": "button",
+              "label": "开启本次分析（主程序确认）",
+              "action_id": "analysis_activate"
+            },
+            {
+              "id": "n-7",
+              "type": "text",
+              "text": "打开插件不会自动分析。问答、标记和执行均需主程序确认；停止分析不会撤销已有任务。"
+            }
+          ]
+        },
+        {
+          "id": "n-26",
+          "type": "tabs",
+          "tabs": [
+            {
+              "id": "tab-ask",
+              "label": "私密问答",
+              "children": [
+                {
+                  "type": "section",
+                  "id": "ask",
+                  "title": "私密问答",
+                  "children": [
+                    {
+                      "id": "n-8",
+                      "type": "text",
+                      "text": "私密回复仅在本会话展示，不广播给其他插件。"
+                    },
+                    {
+                      "id": "n-9",
+                      "type": "textarea",
+                      "name": "message",
+                      "label": "私密问题或执行目标",
+                      "placeholder": "结合会议重点与选中的证据提问",
+                      "rows": 3
+                    },
+                    {
+                      "id": "n-10",
+                      "type": "button",
+                      "label": "询问（主程序确认）",
+                      "action_id": "ask"
+                    },
+                    {
+                      "id": "n-11",
+                      "type": "empty_state",
+                      "title": "暂无私密回复",
+                      "message": "已完成的问答会保存在原执行历史中。"
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "id": "tab-candidates",
+              "label": "待办候选",
+              "children": [
+                {
+                  "type": "section",
+                  "id": "candidates",
+                  "title": "待办候选",
+                  "children": [
+                    {
+                      "id": "n-12",
+                      "type": "empty_state",
+                      "title": "暂无待办候选",
+                      "message": "开启分析后从已确认字幕提取；也可查看历史。"
+                    },
+                    {
+                      "id": "n-13",
+                      "type": "button",
+                      "label": "保存候选选择",
+                      "action_id": "select_candidates"
+                    },
+                    {
+                      "id": "n-14",
+                      "type": "button",
+                      "label": "执行到 Linear（主程序确认）",
+                      "action_id": "execute"
+                    },
+                    {
+                      "id": "n-15",
+                      "type": "text",
+                      "text": "可用性、固定团队、候选范围和写入额度由主程序显示并验证。缺少 Linear 配置不影响问答和本地标记。"
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "id": "tab-marks",
+              "label": "重点与证据",
+              "children": [
+                {
+                  "type": "section",
+                  "id": "marks",
+                  "title": "重点与证据",
+                  "children": [
+                    {
+                      "id": "n-16",
+                      "type": "empty_state",
+                      "title": "暂无重点标记",
+                      "message": "此处保留自动候选、已接受和手动标记。"
+                    },
+                    {
+                      "id": "n-17",
+                      "type": "button",
+                      "label": "保存证据选择",
+                      "action_id": "select_marks"
+                    },
+                    {
+                      "id": "n-18",
+                      "type": "input",
+                      "name": "mark_title",
+                      "label": "手动重点标题"
+                    },
+                    {
+                      "id": "n-19",
+                      "type": "textarea",
+                      "name": "mark_note",
+                      "label": "补充说明",
+                      "rows": 2
+                    },
+                    {
+                      "id": "n-20",
+                      "type": "button",
+                      "label": "添加当前字幕重点（主程序确认）",
+                      "action_id": "mark_create"
+                    },
+                    {
+                      "id": "n-21",
+                      "type": "text",
+                      "text": "当前字幕的 ID、修订和时间由主程序取证；不能仅凭插件表单指定来源。"
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "id": "tab-executions",
+              "label": "执行进度",
+              "children": [
+                {
+                  "type": "section",
+                  "id": "executions",
+                  "title": "执行进度",
+                  "children": [
+                    {
+                      "id": "n-22",
+                      "type": "empty_state",
+                      "title": "暂无执行",
+                      "message": "问答和任务在受理后展示进度；不会随字幕自动执行。"
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "id": "tab-history",
+              "label": "历史记录",
+              "children": [
+                {
+                  "type": "section",
+                  "id": "history",
+                  "title": "历史记录",
+                  "children": [
+                    {
+                      "id": "n-23",
+                      "type": "text",
+                      "text": "原会话：legacy-1 · 当前分页偏移 0"
+                    },
+                    {
+                      "id": "n-24",
+                      "type": "list",
+                      "items": []
+                    },
+                    {
+                      "id": "n-25",
+                      "type": "text",
+                      "text": "历史沿用原记录 ID 与父子链。插件停用或卸载后，请从主程序历史目录只读查看。"
+                    }
+                  ]
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    "actions": [
+      {
+        "id": "analysis_activate",
+        "kind": "command",
+        "command": "analysis_activate"
+      },
+      {
+        "id": "ask",
+        "kind": "command",
+        "command": "ask"
+      },
+      {
+        "id": "execute",
+        "kind": "command",
+        "command": "execute"
+      },
+      {
+        "id": "mark_create",
+        "kind": "command",
+        "command": "mark_create"
+      },
+      {
+        "id": "refresh",
+        "kind": "command",
+        "command": "refresh"
+      },
+      {
+        "id": "select_candidates",
+        "kind": "command",
+        "command": "select_candidates"
+      },
+      {
+        "id": "select_marks",
+        "kind": "command",
+        "command": "select_marks"
+      }
+    ]
+  },
+  "updated": {
+    "schema_version": 1,
+    "surface": "panel",
+    "view_id": "meeting-assistant",
+    "view_version": 1,
+    "root": {
+      "type": "section",
+      "id": "meeting",
+      "title": "私人会议助手",
+      "children": [
+        {
+          "type": "section",
+          "id": "analysis",
+          "title": "本次会议分析",
+          "children": [
+            {
+              "id": "n-1",
+              "type": "badge",
+              "text": "已更新",
+              "tone": "success"
+            },
+            {
+              "id": "n-2",
+              "type": "metric",
+              "label": "当前 Final",
+              "value": "已处理 2 / 2",
+              "detail": "待处理 0（不使用插件 ACK 计数）"
+            },
+            {
+              "id": "n-3",
+              "type": "progress",
+              "label": "当前字幕处理进度",
+              "value": 100
+            },
+            {
+              "id": "n-4",
+              "type": "text",
+              "text": "最近更新：2026-08-31T12:00:00Z"
+            },
+            {
+              "id": "n-5",
+              "type": "button",
+              "label": "刷新状态",
+              "action_id": "refresh"
+            },
+            {
+              "id": "n-6",
+              "type": "button",
+              "label": "停止本次分析（主程序确认）",
+              "action_id": "analysis_deactivate"
+            },
+            {
+              "id": "n-7",
+              "type": "text",
+              "text": "打开插件不会自动分析。问答、标记和执行均需主程序确认；停止分析不会撤销已有任务。"
+            }
+          ]
+        },
+        {
+          "id": "n-47",
+          "type": "tabs",
+          "tabs": [
+            {
+              "id": "tab-ask",
+              "label": "私密问答",
+              "children": [
+                {
+                  "type": "section",
+                  "id": "ask",
+                  "title": "私密问答",
+                  "children": [
+                    {
+                      "id": "n-8",
+                      "type": "text",
+                      "text": "私密回复仅在本会话展示，不广播给其他插件。"
+                    },
+                    {
+                      "id": "n-9",
+                      "type": "textarea",
+                      "name": "message",
+                      "label": "私密问题或执行目标",
+                      "placeholder": "结合会议重点与选中的证据提问",
+                      "rows": 3
+                    },
+                    {
+                      "id": "n-10",
+                      "type": "button",
+                      "label": "询问（主程序确认）",
+                      "action_id": "ask"
+                    },
+                    {
+                      "id": "n-12",
+                      "type": "card",
+                      "title": "What changed?",
+                      "children": [
+                        {
+                          "id": "n-11",
+                          "type": "text",
+                          "text": "Keep the evidence."
+                        }
+                      ]
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "id": "tab-candidates",
+              "label": "待办候选",
+              "children": [
+                {
+                  "type": "section",
+                  "id": "candidates",
+                  "title": "待办候选",
+                  "children": [
+                    {
+                      "id": "n-18",
+                      "type": "card",
+                      "title": "Release notes",
+                      "children": [
+                        {
+                          "id": "n-13",
+                          "type": "text",
+                          "text": "ID candidate-1 · r2 · recordable · active / not_requested"
+                        },
+                        {
+                          "id": "n-14",
+                          "type": "text",
+                          "text": "交付物：Changelog；负责人：待补充；截止：待补充；优先级：normal"
+                        },
+                        {
+                          "id": "n-15",
+                          "type": "text",
+                          "text": "s1 · r2：Friday release"
+                        },
+                        {
+                          "id": "n-16",
+                          "type": "media_anchor",
+                          "media_time_ms": 16690,
+                          "label": "s1 · r2"
+                        },
+                        {
+                          "id": "n-17",
+                          "type": "checkbox",
+                          "name": "candidate_id-fed53ee6b0ddd474",
+                          "label": "选择此候选",
+                          "checked": false
+                        }
+                      ]
+                    },
+                    {
+                      "id": "n-19",
+                      "type": "button",
+                      "label": "保存候选选择",
+                      "action_id": "select_candidates"
+                    },
+                    {
+                      "id": "n-20",
+                      "type": "button",
+                      "label": "执行到 Linear（主程序确认）",
+                      "action_id": "execute"
+                    },
+                    {
+                      "id": "n-21",
+                      "type": "text",
+                      "text": "可用性、固定团队、候选范围和写入额度由主程序显示并验证。缺少 Linear 配置不影响问答和本地标记。"
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "id": "tab-marks",
+              "label": "重点与证据",
+              "children": [
+                {
+                  "type": "section",
+                  "id": "marks",
+                  "title": "重点与证据",
+                  "children": [
+                    {
+                      "id": "n-27",
+                      "type": "card",
+                      "title": "Release date",
+                      "children": [
+                        {
+                          "id": "n-22",
+                          "type": "text",
+                          "text": "ID mark-1 · automatic · decision · candidate"
+                        },
+                        {
+                          "id": "n-23",
+                          "type": "text",
+                          "text": "Confirm the date"
+                        },
+                        {
+                          "id": "n-24",
+                          "type": "media_anchor",
+                          "media_time_ms": 16690,
+                          "label": "来源视频坐标"
+                        },
+                        {
+                          "id": "n-25",
+                          "type": "text",
+                          "text": "s1 · r2：Friday release"
+                        },
+                        {
+                          "id": "n-26",
+                          "type": "checkbox",
+                          "name": "mark_id-0e2631e9cfa81c81",
+                          "label": "选作问题证据",
+                          "checked": false
+                        }
+                      ]
+                    },
+                    {
+                      "id": "n-28",
+                      "type": "list",
+                      "items": [
+                        {
+                          "id": "highlights-0",
+                          "primary": "重点：Preserve source evidence",
+                          "secondary": "来源：s1 · r2"
+                        }
+                      ]
+                    },
+                    {
+                      "id": "n-29",
+                      "type": "button",
+                      "label": "保存证据选择",
+                      "action_id": "select_marks"
+                    },
+                    {
+                      "id": "n-30",
+                      "type": "input",
+                      "name": "mark_title",
+                      "label": "手动重点标题"
+                    },
+                    {
+                      "id": "n-31",
+                      "type": "textarea",
+                      "name": "mark_note",
+                      "label": "补充说明",
+                      "rows": 2
+                    },
+                    {
+                      "id": "n-32",
+                      "type": "button",
+                      "label": "添加当前字幕重点（主程序确认）",
+                      "action_id": "mark_create"
+                    },
+                    {
+                      "id": "n-33",
+                      "type": "text",
+                      "text": "当前字幕的 ID、修订和时间由主程序取证；不能仅凭插件表单指定来源。"
+                    },
+                    {
+                      "id": "n-34",
+                      "type": "select",
+                      "name": "mark_id",
+                      "label": "要处理的重点",
+                      "options": [
+                        {
+                          "id": "mark-option-0",
+                          "label": "Release date",
+                          "value": "mark-1"
+                        }
+                      ]
+                    },
+                    {
+                      "id": "n-35",
+                      "type": "button",
+                      "label": "接受重点（主程序确认）",
+                      "action_id": "mark_accept"
+                    },
+                    {
+                      "id": "n-36",
+                      "type": "button",
+                      "label": "忽略重点（主程序确认）",
+                      "action_id": "mark_dismiss"
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "id": "tab-executions",
+              "label": "执行进度",
+              "children": [
+                {
+                  "type": "section",
+                  "id": "executions",
+                  "title": "执行进度",
+                  "children": [
+                    {
+                      "id": "n-37",
+                      "type": "badge",
+                      "text": "completed",
+                      "tone": "info"
+                    },
+                    {
+                      "id": "n-38",
+                      "type": "text",
+                      "text": "执行 exec-1\n根执行 root-1\n父执行 root-1\n版本 2 · 步骤 1"
+                    },
+                    {
+                      "id": "n-39",
+                      "type": "text",
+                      "text": "What changed?"
+                    },
+                    {
+                      "id": "n-40",
+                      "type": "text",
+                      "text": "外部副作用：已确认 0，未知 0。取消不会删除已创建任务。"
+                    },
+                    {
+                      "id": "n-41",
+                      "type": "text",
+                      "text": "Keep the evidence."
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "id": "tab-history",
+              "label": "历史记录",
+              "children": [
+                {
+                  "type": "section",
+                  "id": "history",
+                  "title": "历史记录",
+                  "children": [
+                    {
+                      "id": "n-42",
+                      "type": "text",
+                      "text": "原会话：legacy-1 · 当前分页偏移 0"
+                    },
+                    {
+                      "id": "n-43",
+                      "type": "list",
+                      "items": [
+                        {
+                          "id": "execution-0",
+                          "primary": "What changed?",
+                          "secondary": "exec-1 · completed · 根 root-1 · 2026-08-31T12:00:00Z"
+                        }
+                      ]
+                    },
+                    {
+                      "id": "n-44",
+                      "type": "select",
+                      "name": "execution_id",
+                      "label": "执行详情",
+                      "options": [
+                        {
+                          "id": "execution-option-0",
+                          "label": "What changed? · completed",
+                          "value": "exec-1"
+                        }
+                      ]
+                    },
+                    {
+                      "id": "n-45",
+                      "type": "button",
+                      "label": "查看执行详情",
+                      "action_id": "select_execution"
+                    },
+                    {
+                      "id": "n-46",
+                      "type": "text",
+                      "text": "历史沿用原记录 ID 与父子链。插件停用或卸载后，请从主程序历史目录只读查看。"
+                    }
+                  ]
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    "actions": [
+      {
+        "id": "analysis_deactivate",
+        "kind": "command",
+        "command": "analysis_deactivate"
+      },
+      {
+        "id": "ask",
+        "kind": "command",
+        "command": "ask"
+      },
+      {
+        "id": "execute",
+        "kind": "command",
+        "command": "execute"
+      },
+      {
+        "id": "mark_accept",
+        "kind": "command",
+        "command": "mark_accept"
+      },
+      {
+        "id": "mark_create",
+        "kind": "command",
+        "command": "mark_create"
+      },
+      {
+        "id": "mark_dismiss",
+        "kind": "command",
+        "command": "mark_dismiss"
+      },
+      {
+        "id": "refresh",
+        "kind": "command",
+        "command": "refresh"
+      },
+      {
+        "id": "select_candidates",
+        "kind": "command",
+        "command": "select_candidates"
+      },
+      {
+        "id": "select_execution",
+        "kind": "command",
+        "command": "select_execution"
+      },
+      {
+        "id": "select_marks",
+        "kind": "command",
+        "command": "select_marks"
+      }
+    ]
+  },
+  "waiting": {
+    "schema_version": 1,
+    "surface": "panel",
+    "view_id": "meeting-assistant",
+    "view_version": 1,
+    "root": {
+      "type": "section",
+      "id": "meeting",
+      "title": "私人会议助手",
+      "children": [
+        {
+          "type": "section",
+          "id": "analysis",
+          "title": "本次会议分析",
+          "children": [
+            {
+              "id": "n-1",
+              "type": "badge",
+              "text": "等待字幕",
+              "tone": "info"
+            },
+            {
+              "id": "n-2",
+              "type": "metric",
+              "label": "当前 Final",
+              "value": "已处理 0 / 0",
+              "detail": "待处理 0（不使用插件 ACK 计数）"
+            },
+            {
+              "id": "n-3",
+              "type": "progress",
+              "label": "当前字幕处理进度",
+              "value": 0
+            },
+            {
+              "id": "n-4",
+              "type": "text",
+              "text": "最近更新：2026-08-31T12:00:00Z"
+            },
+            {
+              "id": "n-5",
+              "type": "button",
+              "label": "刷新状态",
+              "action_id": "refresh"
+            },
+            {
+              "id": "n-6",
+              "type": "button",
+              "label": "停止本次分析（主程序确认）",
+              "action_id": "analysis_deactivate"
+            },
+            {
+              "id": "n-7",
+              "type": "text",
+              "text": "打开插件不会自动分析。问答、标记和执行均需主程序确认；停止分析不会撤销已有任务。"
+            }
+          ]
+        },
+        {
+          "id": "n-47",
+          "type": "tabs",
+          "tabs": [
+            {
+              "id": "tab-ask",
+              "label": "私密问答",
+              "children": [
+                {
+                  "type": "section",
+                  "id": "ask",
+                  "title": "私密问答",
+                  "children": [
+                    {
+                      "id": "n-8",
+                      "type": "text",
+                      "text": "私密回复仅在本会话展示，不广播给其他插件。"
+                    },
+                    {
+                      "id": "n-9",
+                      "type": "textarea",
+                      "name": "message",
+                      "label": "私密问题或执行目标",
+                      "placeholder": "结合会议重点与选中的证据提问",
+                      "rows": 3
+                    },
+                    {
+                      "id": "n-10",
+                      "type": "button",
+                      "label": "询问（主程序确认）",
+                      "action_id": "ask"
+                    },
+                    {
+                      "id": "n-12",
+                      "type": "card",
+                      "title": "What changed?",
+                      "children": [
+                        {
+                          "id": "n-11",
+                          "type": "text",
+                          "text": "Keep the evidence."
+                        }
+                      ]
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "id": "tab-candidates",
+              "label": "待办候选",
+              "children": [
+                {
+                  "type": "section",
+                  "id": "candidates",
+                  "title": "待办候选",
+                  "children": [
+                    {
+                      "id": "n-18",
+                      "type": "card",
+                      "title": "Release notes",
+                      "children": [
+                        {
+                          "id": "n-13",
+                          "type": "text",
+                          "text": "ID candidate-1 · r2 · recordable · active / not_requested"
+                        },
+                        {
+                          "id": "n-14",
+                          "type": "text",
+                          "text": "交付物：Changelog；负责人：待补充；截止：待补充；优先级：normal"
+                        },
+                        {
+                          "id": "n-15",
+                          "type": "text",
+                          "text": "s1 · r2：Friday release"
+                        },
+                        {
+                          "id": "n-16",
+                          "type": "media_anchor",
+                          "media_time_ms": 16690,
+                          "label": "s1 · r2"
+                        },
+                        {
+                          "id": "n-17",
+                          "type": "checkbox",
+                          "name": "candidate_id-fed53ee6b0ddd474",
+                          "label": "选择此候选",
+                          "checked": false
+                        }
+                      ]
+                    },
+                    {
+                      "id": "n-19",
+                      "type": "button",
+                      "label": "保存候选选择",
+                      "action_id": "select_candidates"
+                    },
+                    {
+                      "id": "n-20",
+                      "type": "button",
+                      "label": "执行到 Linear（主程序确认）",
+                      "action_id": "execute"
+                    },
+                    {
+                      "id": "n-21",
+                      "type": "text",
+                      "text": "可用性、固定团队、候选范围和写入额度由主程序显示并验证。缺少 Linear 配置不影响问答和本地标记。"
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "id": "tab-marks",
+              "label": "重点与证据",
+              "children": [
+                {
+                  "type": "section",
+                  "id": "marks",
+                  "title": "重点与证据",
+                  "children": [
+                    {
+                      "id": "n-27",
+                      "type": "card",
+                      "title": "Release date",
+                      "children": [
+                        {
+                          "id": "n-22",
+                          "type": "text",
+                          "text": "ID mark-1 · automatic · decision · candidate"
+                        },
+                        {
+                          "id": "n-23",
+                          "type": "text",
+                          "text": "Confirm the date"
+                        },
+                        {
+                          "id": "n-24",
+                          "type": "media_anchor",
+                          "media_time_ms": 16690,
+                          "label": "来源视频坐标"
+                        },
+                        {
+                          "id": "n-25",
+                          "type": "text",
+                          "text": "s1 · r2：Friday release"
+                        },
+                        {
+                          "id": "n-26",
+                          "type": "checkbox",
+                          "name": "mark_id-0e2631e9cfa81c81",
+                          "label": "选作问题证据",
+                          "checked": false
+                        }
+                      ]
+                    },
+                    {
+                      "id": "n-28",
+                      "type": "list",
+                      "items": [
+                        {
+                          "id": "highlights-0",
+                          "primary": "重点：Preserve source evidence",
+                          "secondary": "来源：s1 · r2"
+                        }
+                      ]
+                    },
+                    {
+                      "id": "n-29",
+                      "type": "button",
+                      "label": "保存证据选择",
+                      "action_id": "select_marks"
+                    },
+                    {
+                      "id": "n-30",
+                      "type": "input",
+                      "name": "mark_title",
+                      "label": "手动重点标题"
+                    },
+                    {
+                      "id": "n-31",
+                      "type": "textarea",
+                      "name": "mark_note",
+                      "label": "补充说明",
+                      "rows": 2
+                    },
+                    {
+                      "id": "n-32",
+                      "type": "button",
+                      "label": "添加当前字幕重点（主程序确认）",
+                      "action_id": "mark_create"
+                    },
+                    {
+                      "id": "n-33",
+                      "type": "text",
+                      "text": "当前字幕的 ID、修订和时间由主程序取证；不能仅凭插件表单指定来源。"
+                    },
+                    {
+                      "id": "n-34",
+                      "type": "select",
+                      "name": "mark_id",
+                      "label": "要处理的重点",
+                      "options": [
+                        {
+                          "id": "mark-option-0",
+                          "label": "Release date",
+                          "value": "mark-1"
+                        }
+                      ]
+                    },
+                    {
+                      "id": "n-35",
+                      "type": "button",
+                      "label": "接受重点（主程序确认）",
+                      "action_id": "mark_accept"
+                    },
+                    {
+                      "id": "n-36",
+                      "type": "button",
+                      "label": "忽略重点（主程序确认）",
+                      "action_id": "mark_dismiss"
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "id": "tab-executions",
+              "label": "执行进度",
+              "children": [
+                {
+                  "type": "section",
+                  "id": "executions",
+                  "title": "执行进度",
+                  "children": [
+                    {
+                      "id": "n-37",
+                      "type": "badge",
+                      "text": "completed",
+                      "tone": "info"
+                    },
+                    {
+                      "id": "n-38",
+                      "type": "text",
+                      "text": "执行 exec-1\n根执行 root-1\n父执行 root-1\n版本 2 · 步骤 1"
+                    },
+                    {
+                      "id": "n-39",
+                      "type": "text",
+                      "text": "What changed?"
+                    },
+                    {
+                      "id": "n-40",
+                      "type": "text",
+                      "text": "外部副作用：已确认 0，未知 0。取消不会删除已创建任务。"
+                    },
+                    {
+                      "id": "n-41",
+                      "type": "text",
+                      "text": "Keep the evidence."
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "id": "tab-history",
+              "label": "历史记录",
+              "children": [
+                {
+                  "type": "section",
+                  "id": "history",
+                  "title": "历史记录",
+                  "children": [
+                    {
+                      "id": "n-42",
+                      "type": "text",
+                      "text": "原会话：legacy-1 · 当前分页偏移 0"
+                    },
+                    {
+                      "id": "n-43",
+                      "type": "list",
+                      "items": [
+                        {
+                          "id": "execution-0",
+                          "primary": "What changed?",
+                          "secondary": "exec-1 · completed · 根 root-1 · 2026-08-31T12:00:00Z"
+                        }
+                      ]
+                    },
+                    {
+                      "id": "n-44",
+                      "type": "select",
+                      "name": "execution_id",
+                      "label": "执行详情",
+                      "options": [
+                        {
+                          "id": "execution-option-0",
+                          "label": "What changed? · completed",
+                          "value": "exec-1"
+                        }
+                      ]
+                    },
+                    {
+                      "id": "n-45",
+                      "type": "button",
+                      "label": "查看执行详情",
+                      "action_id": "select_execution"
+                    },
+                    {
+                      "id": "n-46",
+                      "type": "text",
+                      "text": "历史沿用原记录 ID 与父子链。插件停用或卸载后，请从主程序历史目录只读查看。"
+                    }
+                  ]
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    "actions": [
+      {
+        "id": "analysis_deactivate",
+        "kind": "command",
+        "command": "analysis_deactivate"
+      },
+      {
+        "id": "ask",
+        "kind": "command",
+        "command": "ask"
+      },
+      {
+        "id": "execute",
+        "kind": "command",
+        "command": "execute"
+      },
+      {
+        "id": "mark_accept",
+        "kind": "command",
+        "command": "mark_accept"
+      },
+      {
+        "id": "mark_create",
+        "kind": "command",
+        "command": "mark_create"
+      },
+      {
+        "id": "mark_dismiss",
+        "kind": "command",
+        "command": "mark_dismiss"
+      },
+      {
+        "id": "refresh",
+        "kind": "command",
+        "command": "refresh"
+      },
+      {
+        "id": "select_candidates",
+        "kind": "command",
+        "command": "select_candidates"
+      },
+      {
+        "id": "select_execution",
+        "kind": "command",
+        "command": "select_execution"
+      },
+      {
+        "id": "select_marks",
+        "kind": "command",
+        "command": "select_marks"
+      }
+    ]
+  },
+  "processing": {
+    "schema_version": 1,
+    "surface": "panel",
+    "view_id": "meeting-assistant",
+    "view_version": 1,
+    "root": {
+      "type": "section",
+      "id": "meeting",
+      "title": "私人会议助手",
+      "children": [
+        {
+          "type": "section",
+          "id": "analysis",
+          "title": "本次会议分析",
+          "children": [
+            {
+              "id": "n-1",
+              "type": "badge",
+              "text": "分析中",
+              "tone": "info"
+            },
+            {
+              "id": "n-2",
+              "type": "metric",
+              "label": "当前 Final",
+              "value": "已处理 1 / 3",
+              "detail": "待处理 2（不使用插件 ACK 计数）"
+            },
+            {
+              "id": "n-3",
+              "type": "progress",
+              "label": "当前字幕处理进度",
+              "value": 33
+            },
+            {
+              "id": "n-4",
+              "type": "text",
+              "text": "最近更新：2026-08-31T12:00:00Z"
+            },
+            {
+              "id": "n-5",
+              "type": "button",
+              "label": "刷新状态",
+              "action_id": "refresh"
+            },
+            {
+              "id": "n-6",
+              "type": "button",
+              "label": "停止本次分析（主程序确认）",
+              "action_id": "analysis_deactivate"
+            },
+            {
+              "id": "n-7",
+              "type": "text",
+              "text": "打开插件不会自动分析。问答、标记和执行均需主程序确认；停止分析不会撤销已有任务。"
+            }
+          ]
+        },
+        {
+          "id": "n-47",
+          "type": "tabs",
+          "tabs": [
+            {
+              "id": "tab-ask",
+              "label": "私密问答",
+              "children": [
+                {
+                  "type": "section",
+                  "id": "ask",
+                  "title": "私密问答",
+                  "children": [
+                    {
+                      "id": "n-8",
+                      "type": "text",
+                      "text": "私密回复仅在本会话展示，不广播给其他插件。"
+                    },
+                    {
+                      "id": "n-9",
+                      "type": "textarea",
+                      "name": "message",
+                      "label": "私密问题或执行目标",
+                      "placeholder": "结合会议重点与选中的证据提问",
+                      "rows": 3
+                    },
+                    {
+                      "id": "n-10",
+                      "type": "button",
+                      "label": "询问（主程序确认）",
+                      "action_id": "ask"
+                    },
+                    {
+                      "id": "n-12",
+                      "type": "card",
+                      "title": "What changed?",
+                      "children": [
+                        {
+                          "id": "n-11",
+                          "type": "text",
+                          "text": "Keep the evidence."
+                        }
+                      ]
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "id": "tab-candidates",
+              "label": "待办候选",
+              "children": [
+                {
+                  "type": "section",
+                  "id": "candidates",
+                  "title": "待办候选",
+                  "children": [
+                    {
+                      "id": "n-18",
+                      "type": "card",
+                      "title": "Release notes",
+                      "children": [
+                        {
+                          "id": "n-13",
+                          "type": "text",
+                          "text": "ID candidate-1 · r2 · recordable · active / not_requested"
+                        },
+                        {
+                          "id": "n-14",
+                          "type": "text",
+                          "text": "交付物：Changelog；负责人：待补充；截止：待补充；优先级：normal"
+                        },
+                        {
+                          "id": "n-15",
+                          "type": "text",
+                          "text": "s1 · r2：Friday release"
+                        },
+                        {
+                          "id": "n-16",
+                          "type": "media_anchor",
+                          "media_time_ms": 16690,
+                          "label": "s1 · r2"
+                        },
+                        {
+                          "id": "n-17",
+                          "type": "checkbox",
+                          "name": "candidate_id-fed53ee6b0ddd474",
+                          "label": "选择此候选",
+                          "checked": false
+                        }
+                      ]
+                    },
+                    {
+                      "id": "n-19",
+                      "type": "button",
+                      "label": "保存候选选择",
+                      "action_id": "select_candidates"
+                    },
+                    {
+                      "id": "n-20",
+                      "type": "button",
+                      "label": "执行到 Linear（主程序确认）",
+                      "action_id": "execute"
+                    },
+                    {
+                      "id": "n-21",
+                      "type": "text",
+                      "text": "可用性、固定团队、候选范围和写入额度由主程序显示并验证。缺少 Linear 配置不影响问答和本地标记。"
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "id": "tab-marks",
+              "label": "重点与证据",
+              "children": [
+                {
+                  "type": "section",
+                  "id": "marks",
+                  "title": "重点与证据",
+                  "children": [
+                    {
+                      "id": "n-27",
+                      "type": "card",
+                      "title": "Release date",
+                      "children": [
+                        {
+                          "id": "n-22",
+                          "type": "text",
+                          "text": "ID mark-1 · automatic · decision · candidate"
+                        },
+                        {
+                          "id": "n-23",
+                          "type": "text",
+                          "text": "Confirm the date"
+                        },
+                        {
+                          "id": "n-24",
+                          "type": "media_anchor",
+                          "media_time_ms": 16690,
+                          "label": "来源视频坐标"
+                        },
+                        {
+                          "id": "n-25",
+                          "type": "text",
+                          "text": "s1 · r2：Friday release"
+                        },
+                        {
+                          "id": "n-26",
+                          "type": "checkbox",
+                          "name": "mark_id-0e2631e9cfa81c81",
+                          "label": "选作问题证据",
+                          "checked": false
+                        }
+                      ]
+                    },
+                    {
+                      "id": "n-28",
+                      "type": "list",
+                      "items": [
+                        {
+                          "id": "highlights-0",
+                          "primary": "重点：Preserve source evidence",
+                          "secondary": "来源：s1 · r2"
+                        }
+                      ]
+                    },
+                    {
+                      "id": "n-29",
+                      "type": "button",
+                      "label": "保存证据选择",
+                      "action_id": "select_marks"
+                    },
+                    {
+                      "id": "n-30",
+                      "type": "input",
+                      "name": "mark_title",
+                      "label": "手动重点标题"
+                    },
+                    {
+                      "id": "n-31",
+                      "type": "textarea",
+                      "name": "mark_note",
+                      "label": "补充说明",
+                      "rows": 2
+                    },
+                    {
+                      "id": "n-32",
+                      "type": "button",
+                      "label": "添加当前字幕重点（主程序确认）",
+                      "action_id": "mark_create"
+                    },
+                    {
+                      "id": "n-33",
+                      "type": "text",
+                      "text": "当前字幕的 ID、修订和时间由主程序取证；不能仅凭插件表单指定来源。"
+                    },
+                    {
+                      "id": "n-34",
+                      "type": "select",
+                      "name": "mark_id",
+                      "label": "要处理的重点",
+                      "options": [
+                        {
+                          "id": "mark-option-0",
+                          "label": "Release date",
+                          "value": "mark-1"
+                        }
+                      ]
+                    },
+                    {
+                      "id": "n-35",
+                      "type": "button",
+                      "label": "接受重点（主程序确认）",
+                      "action_id": "mark_accept"
+                    },
+                    {
+                      "id": "n-36",
+                      "type": "button",
+                      "label": "忽略重点（主程序确认）",
+                      "action_id": "mark_dismiss"
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "id": "tab-executions",
+              "label": "执行进度",
+              "children": [
+                {
+                  "type": "section",
+                  "id": "executions",
+                  "title": "执行进度",
+                  "children": [
+                    {
+                      "id": "n-37",
+                      "type": "badge",
+                      "text": "completed",
+                      "tone": "info"
+                    },
+                    {
+                      "id": "n-38",
+                      "type": "text",
+                      "text": "执行 exec-1\n根执行 root-1\n父执行 root-1\n版本 2 · 步骤 1"
+                    },
+                    {
+                      "id": "n-39",
+                      "type": "text",
+                      "text": "What changed?"
+                    },
+                    {
+                      "id": "n-40",
+                      "type": "text",
+                      "text": "外部副作用：已确认 0，未知 0。取消不会删除已创建任务。"
+                    },
+                    {
+                      "id": "n-41",
+                      "type": "text",
+                      "text": "Keep the evidence."
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "id": "tab-history",
+              "label": "历史记录",
+              "children": [
+                {
+                  "type": "section",
+                  "id": "history",
+                  "title": "历史记录",
+                  "children": [
+                    {
+                      "id": "n-42",
+                      "type": "text",
+                      "text": "原会话：legacy-1 · 当前分页偏移 0"
+                    },
+                    {
+                      "id": "n-43",
+                      "type": "list",
+                      "items": [
+                        {
+                          "id": "execution-0",
+                          "primary": "What changed?",
+                          "secondary": "exec-1 · completed · 根 root-1 · 2026-08-31T12:00:00Z"
+                        }
+                      ]
+                    },
+                    {
+                      "id": "n-44",
+                      "type": "select",
+                      "name": "execution_id",
+                      "label": "执行详情",
+                      "options": [
+                        {
+                          "id": "execution-option-0",
+                          "label": "What changed? · completed",
+                          "value": "exec-1"
+                        }
+                      ]
+                    },
+                    {
+                      "id": "n-45",
+                      "type": "button",
+                      "label": "查看执行详情",
+                      "action_id": "select_execution"
+                    },
+                    {
+                      "id": "n-46",
+                      "type": "text",
+                      "text": "历史沿用原记录 ID 与父子链。插件停用或卸载后，请从主程序历史目录只读查看。"
+                    }
+                  ]
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    "actions": [
+      {
+        "id": "analysis_deactivate",
+        "kind": "command",
+        "command": "analysis_deactivate"
+      },
+      {
+        "id": "ask",
+        "kind": "command",
+        "command": "ask"
+      },
+      {
+        "id": "execute",
+        "kind": "command",
+        "command": "execute"
+      },
+      {
+        "id": "mark_accept",
+        "kind": "command",
+        "command": "mark_accept"
+      },
+      {
+        "id": "mark_create",
+        "kind": "command",
+        "command": "mark_create"
+      },
+      {
+        "id": "mark_dismiss",
+        "kind": "command",
+        "command": "mark_dismiss"
+      },
+      {
+        "id": "refresh",
+        "kind": "command",
+        "command": "refresh"
+      },
+      {
+        "id": "select_candidates",
+        "kind": "command",
+        "command": "select_candidates"
+      },
+      {
+        "id": "select_execution",
+        "kind": "command",
+        "command": "select_execution"
+      },
+      {
+        "id": "select_marks",
+        "kind": "command",
+        "command": "select_marks"
+      }
+    ]
+  },
+  "disabled": {
+    "schema_version": 1,
+    "surface": "panel",
+    "view_id": "meeting-assistant",
+    "view_version": 1,
+    "root": {
+      "type": "section",
+      "id": "meeting",
+      "title": "私人会议助手",
+      "children": [
+        {
+          "type": "section",
+          "id": "analysis",
+          "title": "本次会议分析",
+          "children": [
+            {
+              "id": "n-1",
+              "type": "badge",
+              "text": "已停止分析",
+              "tone": "neutral"
+            },
+            {
+              "id": "n-2",
+              "type": "metric",
+              "label": "当前 Final",
+              "value": "已处理 2 / 2",
+              "detail": "待处理 0（不使用插件 ACK 计数）"
+            },
+            {
+              "id": "n-3",
+              "type": "progress",
+              "label": "当前字幕处理进度",
+              "value": 100
+            },
+            {
+              "id": "n-4",
+              "type": "text",
+              "text": "最近更新：2026-08-31T12:00:00Z"
+            },
+            {
+              "id": "n-5",
+              "type": "button",
+              "label": "刷新状态",
+              "action_id": "refresh"
+            },
+            {
+              "id": "n-6",
+              "type": "button",
+              "label": "开启本次分析（主程序确认）",
+              "action_id": "analysis_activate"
+            },
+            {
+              "id": "n-7",
+              "type": "text",
+              "text": "打开插件不会自动分析。问答、标记和执行均需主程序确认；停止分析不会撤销已有任务。"
+            }
+          ]
+        },
+        {
+          "id": "n-47",
+          "type": "tabs",
+          "tabs": [
+            {
+              "id": "tab-ask",
+              "label": "私密问答",
+              "children": [
+                {
+                  "type": "section",
+                  "id": "ask",
+                  "title": "私密问答",
+                  "children": [
+                    {
+                      "id": "n-8",
+                      "type": "text",
+                      "text": "私密回复仅在本会话展示，不广播给其他插件。"
+                    },
+                    {
+                      "id": "n-9",
+                      "type": "textarea",
+                      "name": "message",
+                      "label": "私密问题或执行目标",
+                      "placeholder": "结合会议重点与选中的证据提问",
+                      "rows": 3
+                    },
+                    {
+                      "id": "n-10",
+                      "type": "button",
+                      "label": "询问（主程序确认）",
+                      "action_id": "ask"
+                    },
+                    {
+                      "id": "n-12",
+                      "type": "card",
+                      "title": "What changed?",
+                      "children": [
+                        {
+                          "id": "n-11",
+                          "type": "text",
+                          "text": "Keep the evidence."
+                        }
+                      ]
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "id": "tab-candidates",
+              "label": "待办候选",
+              "children": [
+                {
+                  "type": "section",
+                  "id": "candidates",
+                  "title": "待办候选",
+                  "children": [
+                    {
+                      "id": "n-18",
+                      "type": "card",
+                      "title": "Release notes",
+                      "children": [
+                        {
+                          "id": "n-13",
+                          "type": "text",
+                          "text": "ID candidate-1 · r2 · recordable · active / not_requested"
+                        },
+                        {
+                          "id": "n-14",
+                          "type": "text",
+                          "text": "交付物：Changelog；负责人：待补充；截止：待补充；优先级：normal"
+                        },
+                        {
+                          "id": "n-15",
+                          "type": "text",
+                          "text": "s1 · r2：Friday release"
+                        },
+                        {
+                          "id": "n-16",
+                          "type": "media_anchor",
+                          "media_time_ms": 16690,
+                          "label": "s1 · r2"
+                        },
+                        {
+                          "id": "n-17",
+                          "type": "checkbox",
+                          "name": "candidate_id-fed53ee6b0ddd474",
+                          "label": "选择此候选",
+                          "checked": false
+                        }
+                      ]
+                    },
+                    {
+                      "id": "n-19",
+                      "type": "button",
+                      "label": "保存候选选择",
+                      "action_id": "select_candidates"
+                    },
+                    {
+                      "id": "n-20",
+                      "type": "button",
+                      "label": "执行到 Linear（主程序确认）",
+                      "action_id": "execute"
+                    },
+                    {
+                      "id": "n-21",
+                      "type": "text",
+                      "text": "可用性、固定团队、候选范围和写入额度由主程序显示并验证。缺少 Linear 配置不影响问答和本地标记。"
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "id": "tab-marks",
+              "label": "重点与证据",
+              "children": [
+                {
+                  "type": "section",
+                  "id": "marks",
+                  "title": "重点与证据",
+                  "children": [
+                    {
+                      "id": "n-27",
+                      "type": "card",
+                      "title": "Release date",
+                      "children": [
+                        {
+                          "id": "n-22",
+                          "type": "text",
+                          "text": "ID mark-1 · automatic · decision · candidate"
+                        },
+                        {
+                          "id": "n-23",
+                          "type": "text",
+                          "text": "Confirm the date"
+                        },
+                        {
+                          "id": "n-24",
+                          "type": "media_anchor",
+                          "media_time_ms": 16690,
+                          "label": "来源视频坐标"
+                        },
+                        {
+                          "id": "n-25",
+                          "type": "text",
+                          "text": "s1 · r2：Friday release"
+                        },
+                        {
+                          "id": "n-26",
+                          "type": "checkbox",
+                          "name": "mark_id-0e2631e9cfa81c81",
+                          "label": "选作问题证据",
+                          "checked": false
+                        }
+                      ]
+                    },
+                    {
+                      "id": "n-28",
+                      "type": "list",
+                      "items": [
+                        {
+                          "id": "highlights-0",
+                          "primary": "重点：Preserve source evidence",
+                          "secondary": "来源：s1 · r2"
+                        }
+                      ]
+                    },
+                    {
+                      "id": "n-29",
+                      "type": "button",
+                      "label": "保存证据选择",
+                      "action_id": "select_marks"
+                    },
+                    {
+                      "id": "n-30",
+                      "type": "input",
+                      "name": "mark_title",
+                      "label": "手动重点标题"
+                    },
+                    {
+                      "id": "n-31",
+                      "type": "textarea",
+                      "name": "mark_note",
+                      "label": "补充说明",
+                      "rows": 2
+                    },
+                    {
+                      "id": "n-32",
+                      "type": "button",
+                      "label": "添加当前字幕重点（主程序确认）",
+                      "action_id": "mark_create"
+                    },
+                    {
+                      "id": "n-33",
+                      "type": "text",
+                      "text": "当前字幕的 ID、修订和时间由主程序取证；不能仅凭插件表单指定来源。"
+                    },
+                    {
+                      "id": "n-34",
+                      "type": "select",
+                      "name": "mark_id",
+                      "label": "要处理的重点",
+                      "options": [
+                        {
+                          "id": "mark-option-0",
+                          "label": "Release date",
+                          "value": "mark-1"
+                        }
+                      ]
+                    },
+                    {
+                      "id": "n-35",
+                      "type": "button",
+                      "label": "接受重点（主程序确认）",
+                      "action_id": "mark_accept"
+                    },
+                    {
+                      "id": "n-36",
+                      "type": "button",
+                      "label": "忽略重点（主程序确认）",
+                      "action_id": "mark_dismiss"
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "id": "tab-executions",
+              "label": "执行进度",
+              "children": [
+                {
+                  "type": "section",
+                  "id": "executions",
+                  "title": "执行进度",
+                  "children": [
+                    {
+                      "id": "n-37",
+                      "type": "badge",
+                      "text": "completed",
+                      "tone": "info"
+                    },
+                    {
+                      "id": "n-38",
+                      "type": "text",
+                      "text": "执行 exec-1\n根执行 root-1\n父执行 root-1\n版本 2 · 步骤 1"
+                    },
+                    {
+                      "id": "n-39",
+                      "type": "text",
+                      "text": "What changed?"
+                    },
+                    {
+                      "id": "n-40",
+                      "type": "text",
+                      "text": "外部副作用：已确认 0，未知 0。取消不会删除已创建任务。"
+                    },
+                    {
+                      "id": "n-41",
+                      "type": "text",
+                      "text": "Keep the evidence."
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "id": "tab-history",
+              "label": "历史记录",
+              "children": [
+                {
+                  "type": "section",
+                  "id": "history",
+                  "title": "历史记录",
+                  "children": [
+                    {
+                      "id": "n-42",
+                      "type": "text",
+                      "text": "原会话：legacy-1 · 当前分页偏移 0"
+                    },
+                    {
+                      "id": "n-43",
+                      "type": "list",
+                      "items": [
+                        {
+                          "id": "execution-0",
+                          "primary": "What changed?",
+                          "secondary": "exec-1 · completed · 根 root-1 · 2026-08-31T12:00:00Z"
+                        }
+                      ]
+                    },
+                    {
+                      "id": "n-44",
+                      "type": "select",
+                      "name": "execution_id",
+                      "label": "执行详情",
+                      "options": [
+                        {
+                          "id": "execution-option-0",
+                          "label": "What changed? · completed",
+                          "value": "exec-1"
+                        }
+                      ]
+                    },
+                    {
+                      "id": "n-45",
+                      "type": "button",
+                      "label": "查看执行详情",
+                      "action_id": "select_execution"
+                    },
+                    {
+                      "id": "n-46",
+                      "type": "text",
+                      "text": "历史沿用原记录 ID 与父子链。插件停用或卸载后，请从主程序历史目录只读查看。"
+                    }
+                  ]
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    "actions": [
+      {
+        "id": "analysis_activate",
+        "kind": "command",
+        "command": "analysis_activate"
+      },
+      {
+        "id": "ask",
+        "kind": "command",
+        "command": "ask"
+      },
+      {
+        "id": "execute",
+        "kind": "command",
+        "command": "execute"
+      },
+      {
+        "id": "mark_accept",
+        "kind": "command",
+        "command": "mark_accept"
+      },
+      {
+        "id": "mark_create",
+        "kind": "command",
+        "command": "mark_create"
+      },
+      {
+        "id": "mark_dismiss",
+        "kind": "command",
+        "command": "mark_dismiss"
+      },
+      {
+        "id": "refresh",
+        "kind": "command",
+        "command": "refresh"
+      },
+      {
+        "id": "select_candidates",
+        "kind": "command",
+        "command": "select_candidates"
+      },
+      {
+        "id": "select_execution",
+        "kind": "command",
+        "command": "select_execution"
+      },
+      {
+        "id": "select_marks",
+        "kind": "command",
+        "command": "select_marks"
+      }
+    ]
+  },
+  "completed": {
+    "schema_version": 1,
+    "surface": "panel",
+    "view_id": "meeting-assistant",
+    "view_version": 1,
+    "root": {
+      "type": "section",
+      "id": "meeting",
+      "title": "私人会议助手",
+      "children": [
+        {
+          "type": "section",
+          "id": "analysis",
+          "title": "本次会议分析",
+          "children": [
+            {
+              "id": "n-1",
+              "type": "badge",
+              "text": "本次分析已结束",
+              "tone": "success"
+            },
+            {
+              "id": "n-2",
+              "type": "metric",
+              "label": "当前 Final",
+              "value": "已处理 2 / 2",
+              "detail": "待处理 0（不使用插件 ACK 计数）"
+            },
+            {
+              "id": "n-3",
+              "type": "progress",
+              "label": "当前字幕处理进度",
+              "value": 100
+            },
+            {
+              "id": "n-4",
+              "type": "text",
+              "text": "最近更新：2026-08-31T12:00:00Z"
+            },
+            {
+              "id": "n-5",
+              "type": "button",
+              "label": "刷新状态",
+              "action_id": "refresh"
+            },
+            {
+              "id": "n-6",
+              "type": "text",
+              "text": "打开插件不会自动分析。问答、标记和执行均需主程序确认；停止分析不会撤销已有任务。"
+            }
+          ]
+        },
+        {
+          "id": "n-46",
+          "type": "tabs",
+          "tabs": [
+            {
+              "id": "tab-ask",
+              "label": "私密问答",
+              "children": [
+                {
+                  "type": "section",
+                  "id": "ask",
+                  "title": "私密问答",
+                  "children": [
+                    {
+                      "id": "n-7",
+                      "type": "text",
+                      "text": "私密回复仅在本会话展示，不广播给其他插件。"
+                    },
+                    {
+                      "id": "n-8",
+                      "type": "textarea",
+                      "name": "message",
+                      "label": "私密问题或执行目标",
+                      "placeholder": "结合会议重点与选中的证据提问",
+                      "rows": 3
+                    },
+                    {
+                      "id": "n-9",
+                      "type": "button",
+                      "label": "询问（主程序确认）",
+                      "action_id": "ask"
+                    },
+                    {
+                      "id": "n-11",
+                      "type": "card",
+                      "title": "What changed?",
+                      "children": [
+                        {
+                          "id": "n-10",
+                          "type": "text",
+                          "text": "Keep the evidence."
+                        }
+                      ]
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "id": "tab-candidates",
+              "label": "待办候选",
+              "children": [
+                {
+                  "type": "section",
+                  "id": "candidates",
+                  "title": "待办候选",
+                  "children": [
+                    {
+                      "id": "n-17",
+                      "type": "card",
+                      "title": "Release notes",
+                      "children": [
+                        {
+                          "id": "n-12",
+                          "type": "text",
+                          "text": "ID candidate-1 · r2 · recordable · active / not_requested"
+                        },
+                        {
+                          "id": "n-13",
+                          "type": "text",
+                          "text": "交付物：Changelog；负责人：待补充；截止：待补充；优先级：normal"
+                        },
+                        {
+                          "id": "n-14",
+                          "type": "text",
+                          "text": "s1 · r2：Friday release"
+                        },
+                        {
+                          "id": "n-15",
+                          "type": "media_anchor",
+                          "media_time_ms": 16690,
+                          "label": "s1 · r2"
+                        },
+                        {
+                          "id": "n-16",
+                          "type": "checkbox",
+                          "name": "candidate_id-fed53ee6b0ddd474",
+                          "label": "选择此候选",
+                          "checked": false
+                        }
+                      ]
+                    },
+                    {
+                      "id": "n-18",
+                      "type": "button",
+                      "label": "保存候选选择",
+                      "action_id": "select_candidates"
+                    },
+                    {
+                      "id": "n-19",
+                      "type": "button",
+                      "label": "执行到 Linear（主程序确认）",
+                      "action_id": "execute"
+                    },
+                    {
+                      "id": "n-20",
+                      "type": "text",
+                      "text": "可用性、固定团队、候选范围和写入额度由主程序显示并验证。缺少 Linear 配置不影响问答和本地标记。"
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "id": "tab-marks",
+              "label": "重点与证据",
+              "children": [
+                {
+                  "type": "section",
+                  "id": "marks",
+                  "title": "重点与证据",
+                  "children": [
+                    {
+                      "id": "n-26",
+                      "type": "card",
+                      "title": "Release date",
+                      "children": [
+                        {
+                          "id": "n-21",
+                          "type": "text",
+                          "text": "ID mark-1 · automatic · decision · candidate"
+                        },
+                        {
+                          "id": "n-22",
+                          "type": "text",
+                          "text": "Confirm the date"
+                        },
+                        {
+                          "id": "n-23",
+                          "type": "media_anchor",
+                          "media_time_ms": 16690,
+                          "label": "来源视频坐标"
+                        },
+                        {
+                          "id": "n-24",
+                          "type": "text",
+                          "text": "s1 · r2：Friday release"
+                        },
+                        {
+                          "id": "n-25",
+                          "type": "checkbox",
+                          "name": "mark_id-0e2631e9cfa81c81",
+                          "label": "选作问题证据",
+                          "checked": false
+                        }
+                      ]
+                    },
+                    {
+                      "id": "n-27",
+                      "type": "list",
+                      "items": [
+                        {
+                          "id": "highlights-0",
+                          "primary": "重点：Preserve source evidence",
+                          "secondary": "来源：s1 · r2"
+                        }
+                      ]
+                    },
+                    {
+                      "id": "n-28",
+                      "type": "button",
+                      "label": "保存证据选择",
+                      "action_id": "select_marks"
+                    },
+                    {
+                      "id": "n-29",
+                      "type": "input",
+                      "name": "mark_title",
+                      "label": "手动重点标题"
+                    },
+                    {
+                      "id": "n-30",
+                      "type": "textarea",
+                      "name": "mark_note",
+                      "label": "补充说明",
+                      "rows": 2
+                    },
+                    {
+                      "id": "n-31",
+                      "type": "button",
+                      "label": "添加当前字幕重点（主程序确认）",
+                      "action_id": "mark_create"
+                    },
+                    {
+                      "id": "n-32",
+                      "type": "text",
+                      "text": "当前字幕的 ID、修订和时间由主程序取证；不能仅凭插件表单指定来源。"
+                    },
+                    {
+                      "id": "n-33",
+                      "type": "select",
+                      "name": "mark_id",
+                      "label": "要处理的重点",
+                      "options": [
+                        {
+                          "id": "mark-option-0",
+                          "label": "Release date",
+                          "value": "mark-1"
+                        }
+                      ]
+                    },
+                    {
+                      "id": "n-34",
+                      "type": "button",
+                      "label": "接受重点（主程序确认）",
+                      "action_id": "mark_accept"
+                    },
+                    {
+                      "id": "n-35",
+                      "type": "button",
+                      "label": "忽略重点（主程序确认）",
+                      "action_id": "mark_dismiss"
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "id": "tab-executions",
+              "label": "执行进度",
+              "children": [
+                {
+                  "type": "section",
+                  "id": "executions",
+                  "title": "执行进度",
+                  "children": [
+                    {
+                      "id": "n-36",
+                      "type": "badge",
+                      "text": "completed",
+                      "tone": "info"
+                    },
+                    {
+                      "id": "n-37",
+                      "type": "text",
+                      "text": "执行 exec-1\n根执行 root-1\n父执行 root-1\n版本 2 · 步骤 1"
+                    },
+                    {
+                      "id": "n-38",
+                      "type": "text",
+                      "text": "What changed?"
+                    },
+                    {
+                      "id": "n-39",
+                      "type": "text",
+                      "text": "外部副作用：已确认 0，未知 0。取消不会删除已创建任务。"
+                    },
+                    {
+                      "id": "n-40",
+                      "type": "text",
+                      "text": "Keep the evidence."
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "id": "tab-history",
+              "label": "历史记录",
+              "children": [
+                {
+                  "type": "section",
+                  "id": "history",
+                  "title": "历史记录",
+                  "children": [
+                    {
+                      "id": "n-41",
+                      "type": "text",
+                      "text": "原会话：legacy-1 · 当前分页偏移 0"
+                    },
+                    {
+                      "id": "n-42",
+                      "type": "list",
+                      "items": [
+                        {
+                          "id": "execution-0",
+                          "primary": "What changed?",
+                          "secondary": "exec-1 · completed · 根 root-1 · 2026-08-31T12:00:00Z"
+                        }
+                      ]
+                    },
+                    {
+                      "id": "n-43",
+                      "type": "select",
+                      "name": "execution_id",
+                      "label": "执行详情",
+                      "options": [
+                        {
+                          "id": "execution-option-0",
+                          "label": "What changed? · completed",
+                          "value": "exec-1"
+                        }
+                      ]
+                    },
+                    {
+                      "id": "n-44",
+                      "type": "button",
+                      "label": "查看执行详情",
+                      "action_id": "select_execution"
+                    },
+                    {
+                      "id": "n-45",
+                      "type": "text",
+                      "text": "历史沿用原记录 ID 与父子链。插件停用或卸载后，请从主程序历史目录只读查看。"
+                    }
+                  ]
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    "actions": [
+      {
+        "id": "ask",
+        "kind": "command",
+        "command": "ask"
+      },
+      {
+        "id": "execute",
+        "kind": "command",
+        "command": "execute"
+      },
+      {
+        "id": "mark_accept",
+        "kind": "command",
+        "command": "mark_accept"
+      },
+      {
+        "id": "mark_create",
+        "kind": "command",
+        "command": "mark_create"
+      },
+      {
+        "id": "mark_dismiss",
+        "kind": "command",
+        "command": "mark_dismiss"
+      },
+      {
+        "id": "refresh",
+        "kind": "command",
+        "command": "refresh"
+      },
+      {
+        "id": "select_candidates",
+        "kind": "command",
+        "command": "select_candidates"
+      },
+      {
+        "id": "select_execution",
+        "kind": "command",
+        "command": "select_execution"
+      },
+      {
+        "id": "select_marks",
+        "kind": "command",
+        "command": "select_marks"
+      }
+    ]
+  },
+  "model_failed": {
+    "schema_version": 1,
+    "surface": "panel",
+    "view_id": "meeting-assistant",
+    "view_version": 1,
+    "root": {
+      "type": "section",
+      "id": "meeting",
+      "title": "私人会议助手",
+      "children": [
+        {
+          "type": "section",
+          "id": "analysis",
+          "title": "本次会议分析",
+          "children": [
+            {
+              "id": "n-1",
+              "type": "badge",
+              "text": "分析失败，可刷新检查",
+              "tone": "danger"
+            },
+            {
+              "id": "n-2",
+              "type": "metric",
+              "label": "当前 Final",
+              "value": "已处理 2 / 2",
+              "detail": "待处理 0（不使用插件 ACK 计数）"
+            },
+            {
+              "id": "n-3",
+              "type": "progress",
+              "label": "当前字幕处理进度",
+              "value": 100
+            },
+            {
+              "id": "n-4",
+              "type": "text",
+              "text": "最近更新：2026-08-31T12:00:00Z"
+            },
+            {
+              "id": "n-5",
+              "type": "button",
+              "label": "刷新状态",
+              "action_id": "refresh"
+            },
+            {
+              "id": "n-6",
+              "type": "error_state",
+              "title": "会议分析暂不可用",
+              "message": "已有内容保留；请检查主程序模型配置和分析错误状态。"
+            },
+            {
+              "id": "n-7",
+              "type": "button",
+              "label": "停止本次分析（主程序确认）",
+              "action_id": "analysis_deactivate"
+            },
+            {
+              "id": "n-8",
+              "type": "text",
+              "text": "打开插件不会自动分析。问答、标记和执行均需主程序确认；停止分析不会撤销已有任务。"
+            }
+          ]
+        },
+        {
+          "id": "n-48",
+          "type": "tabs",
+          "tabs": [
+            {
+              "id": "tab-ask",
+              "label": "私密问答",
+              "children": [
+                {
+                  "type": "section",
+                  "id": "ask",
+                  "title": "私密问答",
+                  "children": [
+                    {
+                      "id": "n-9",
+                      "type": "text",
+                      "text": "私密回复仅在本会话展示，不广播给其他插件。"
+                    },
+                    {
+                      "id": "n-10",
+                      "type": "textarea",
+                      "name": "message",
+                      "label": "私密问题或执行目标",
+                      "placeholder": "结合会议重点与选中的证据提问",
+                      "rows": 3
+                    },
+                    {
+                      "id": "n-11",
+                      "type": "button",
+                      "label": "询问（主程序确认）",
+                      "action_id": "ask"
+                    },
+                    {
+                      "id": "n-13",
+                      "type": "card",
+                      "title": "What changed?",
+                      "children": [
+                        {
+                          "id": "n-12",
+                          "type": "text",
+                          "text": "Keep the evidence."
+                        }
+                      ]
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "id": "tab-candidates",
+              "label": "待办候选",
+              "children": [
+                {
+                  "type": "section",
+                  "id": "candidates",
+                  "title": "待办候选",
+                  "children": [
+                    {
+                      "id": "n-19",
+                      "type": "card",
+                      "title": "Release notes",
+                      "children": [
+                        {
+                          "id": "n-14",
+                          "type": "text",
+                          "text": "ID candidate-1 · r2 · recordable · active / not_requested"
+                        },
+                        {
+                          "id": "n-15",
+                          "type": "text",
+                          "text": "交付物：Changelog；负责人：待补充；截止：待补充；优先级：normal"
+                        },
+                        {
+                          "id": "n-16",
+                          "type": "text",
+                          "text": "s1 · r2：Friday release"
+                        },
+                        {
+                          "id": "n-17",
+                          "type": "media_anchor",
+                          "media_time_ms": 16690,
+                          "label": "s1 · r2"
+                        },
+                        {
+                          "id": "n-18",
+                          "type": "checkbox",
+                          "name": "candidate_id-fed53ee6b0ddd474",
+                          "label": "选择此候选",
+                          "checked": false
+                        }
+                      ]
+                    },
+                    {
+                      "id": "n-20",
+                      "type": "button",
+                      "label": "保存候选选择",
+                      "action_id": "select_candidates"
+                    },
+                    {
+                      "id": "n-21",
+                      "type": "button",
+                      "label": "执行到 Linear（主程序确认）",
+                      "action_id": "execute"
+                    },
+                    {
+                      "id": "n-22",
+                      "type": "text",
+                      "text": "可用性、固定团队、候选范围和写入额度由主程序显示并验证。缺少 Linear 配置不影响问答和本地标记。"
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "id": "tab-marks",
+              "label": "重点与证据",
+              "children": [
+                {
+                  "type": "section",
+                  "id": "marks",
+                  "title": "重点与证据",
+                  "children": [
+                    {
+                      "id": "n-28",
+                      "type": "card",
+                      "title": "Release date",
+                      "children": [
+                        {
+                          "id": "n-23",
+                          "type": "text",
+                          "text": "ID mark-1 · automatic · decision · candidate"
+                        },
+                        {
+                          "id": "n-24",
+                          "type": "text",
+                          "text": "Confirm the date"
+                        },
+                        {
+                          "id": "n-25",
+                          "type": "media_anchor",
+                          "media_time_ms": 16690,
+                          "label": "来源视频坐标"
+                        },
+                        {
+                          "id": "n-26",
+                          "type": "text",
+                          "text": "s1 · r2：Friday release"
+                        },
+                        {
+                          "id": "n-27",
+                          "type": "checkbox",
+                          "name": "mark_id-0e2631e9cfa81c81",
+                          "label": "选作问题证据",
+                          "checked": false
+                        }
+                      ]
+                    },
+                    {
+                      "id": "n-29",
+                      "type": "list",
+                      "items": [
+                        {
+                          "id": "highlights-0",
+                          "primary": "重点：Preserve source evidence",
+                          "secondary": "来源：s1 · r2"
+                        }
+                      ]
+                    },
+                    {
+                      "id": "n-30",
+                      "type": "button",
+                      "label": "保存证据选择",
+                      "action_id": "select_marks"
+                    },
+                    {
+                      "id": "n-31",
+                      "type": "input",
+                      "name": "mark_title",
+                      "label": "手动重点标题"
+                    },
+                    {
+                      "id": "n-32",
+                      "type": "textarea",
+                      "name": "mark_note",
+                      "label": "补充说明",
+                      "rows": 2
+                    },
+                    {
+                      "id": "n-33",
+                      "type": "button",
+                      "label": "添加当前字幕重点（主程序确认）",
+                      "action_id": "mark_create"
+                    },
+                    {
+                      "id": "n-34",
+                      "type": "text",
+                      "text": "当前字幕的 ID、修订和时间由主程序取证；不能仅凭插件表单指定来源。"
+                    },
+                    {
+                      "id": "n-35",
+                      "type": "select",
+                      "name": "mark_id",
+                      "label": "要处理的重点",
+                      "options": [
+                        {
+                          "id": "mark-option-0",
+                          "label": "Release date",
+                          "value": "mark-1"
+                        }
+                      ]
+                    },
+                    {
+                      "id": "n-36",
+                      "type": "button",
+                      "label": "接受重点（主程序确认）",
+                      "action_id": "mark_accept"
+                    },
+                    {
+                      "id": "n-37",
+                      "type": "button",
+                      "label": "忽略重点（主程序确认）",
+                      "action_id": "mark_dismiss"
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "id": "tab-executions",
+              "label": "执行进度",
+              "children": [
+                {
+                  "type": "section",
+                  "id": "executions",
+                  "title": "执行进度",
+                  "children": [
+                    {
+                      "id": "n-38",
+                      "type": "badge",
+                      "text": "completed",
+                      "tone": "info"
+                    },
+                    {
+                      "id": "n-39",
+                      "type": "text",
+                      "text": "执行 exec-1\n根执行 root-1\n父执行 root-1\n版本 2 · 步骤 1"
+                    },
+                    {
+                      "id": "n-40",
+                      "type": "text",
+                      "text": "What changed?"
+                    },
+                    {
+                      "id": "n-41",
+                      "type": "text",
+                      "text": "外部副作用：已确认 0，未知 0。取消不会删除已创建任务。"
+                    },
+                    {
+                      "id": "n-42",
+                      "type": "text",
+                      "text": "Keep the evidence."
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "id": "tab-history",
+              "label": "历史记录",
+              "children": [
+                {
+                  "type": "section",
+                  "id": "history",
+                  "title": "历史记录",
+                  "children": [
+                    {
+                      "id": "n-43",
+                      "type": "text",
+                      "text": "原会话：legacy-1 · 当前分页偏移 0"
+                    },
+                    {
+                      "id": "n-44",
+                      "type": "list",
+                      "items": [
+                        {
+                          "id": "execution-0",
+                          "primary": "What changed?",
+                          "secondary": "exec-1 · completed · 根 root-1 · 2026-08-31T12:00:00Z"
+                        }
+                      ]
+                    },
+                    {
+                      "id": "n-45",
+                      "type": "select",
+                      "name": "execution_id",
+                      "label": "执行详情",
+                      "options": [
+                        {
+                          "id": "execution-option-0",
+                          "label": "What changed? · completed",
+                          "value": "exec-1"
+                        }
+                      ]
+                    },
+                    {
+                      "id": "n-46",
+                      "type": "button",
+                      "label": "查看执行详情",
+                      "action_id": "select_execution"
+                    },
+                    {
+                      "id": "n-47",
+                      "type": "text",
+                      "text": "历史沿用原记录 ID 与父子链。插件停用或卸载后，请从主程序历史目录只读查看。"
+                    }
+                  ]
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    "actions": [
+      {
+        "id": "analysis_deactivate",
+        "kind": "command",
+        "command": "analysis_deactivate"
+      },
+      {
+        "id": "ask",
+        "kind": "command",
+        "command": "ask"
+      },
+      {
+        "id": "execute",
+        "kind": "command",
+        "command": "execute"
+      },
+      {
+        "id": "mark_accept",
+        "kind": "command",
+        "command": "mark_accept"
+      },
+      {
+        "id": "mark_create",
+        "kind": "command",
+        "command": "mark_create"
+      },
+      {
+        "id": "mark_dismiss",
+        "kind": "command",
+        "command": "mark_dismiss"
+      },
+      {
+        "id": "refresh",
+        "kind": "command",
+        "command": "refresh"
+      },
+      {
+        "id": "select_candidates",
+        "kind": "command",
+        "command": "select_candidates"
+      },
+      {
+        "id": "select_execution",
+        "kind": "command",
+        "command": "select_execution"
+      },
+      {
+        "id": "select_marks",
+        "kind": "command",
+        "command": "select_marks"
+      }
+    ]
+  },
+  "needs_input": {
+    "schema_version": 1,
+    "surface": "panel",
+    "view_id": "meeting-assistant",
+    "view_version": 1,
+    "root": {
+      "type": "section",
+      "id": "meeting",
+      "title": "私人会议助手",
+      "children": [
+        {
+          "type": "section",
+          "id": "analysis",
+          "title": "本次会议分析",
+          "children": [
+            {
+              "id": "n-1",
+              "type": "badge",
+              "text": "已更新",
+              "tone": "success"
+            },
+            {
+              "id": "n-2",
+              "type": "metric",
+              "label": "当前 Final",
+              "value": "已处理 2 / 2",
+              "detail": "待处理 0（不使用插件 ACK 计数）"
+            },
+            {
+              "id": "n-3",
+              "type": "progress",
+              "label": "当前字幕处理进度",
+              "value": 100
+            },
+            {
+              "id": "n-4",
+              "type": "text",
+              "text": "最近更新：2026-08-31T12:00:00Z"
+            },
+            {
+              "id": "n-5",
+              "type": "button",
+              "label": "刷新状态",
+              "action_id": "refresh"
+            },
+            {
+              "id": "n-6",
+              "type": "button",
+              "label": "停止本次分析（主程序确认）",
+              "action_id": "analysis_deactivate"
+            },
+            {
+              "id": "n-7",
+              "type": "text",
+              "text": "打开插件不会自动分析。问答、标记和执行均需主程序确认；停止分析不会撤销已有任务。"
+            }
+          ]
+        },
+        {
+          "id": "n-56",
+          "type": "tabs",
+          "tabs": [
+            {
+              "id": "tab-ask",
+              "label": "私密问答",
+              "children": [
+                {
+                  "type": "section",
+                  "id": "ask",
+                  "title": "私密问答",
+                  "children": [
+                    {
+                      "id": "n-8",
+                      "type": "text",
+                      "text": "私密回复仅在本会话展示，不广播给其他插件。"
+                    },
+                    {
+                      "id": "n-9",
+                      "type": "textarea",
+                      "name": "message",
+                      "label": "私密问题或执行目标",
+                      "placeholder": "结合会议重点与选中的证据提问",
+                      "rows": 3
+                    },
+                    {
+                      "id": "n-10",
+                      "type": "button",
+                      "label": "询问（主程序确认）",
+                      "action_id": "ask"
+                    },
+                    {
+                      "id": "n-11",
+                      "type": "empty_state",
+                      "title": "暂无私密回复",
+                      "message": "已完成的问答会保存在原执行历史中。"
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "id": "tab-candidates",
+              "label": "待办候选",
+              "children": [
+                {
+                  "type": "section",
+                  "id": "candidates",
+                  "title": "待办候选",
+                  "children": [
+                    {
+                      "id": "n-17",
+                      "type": "card",
+                      "title": "Release notes",
+                      "children": [
+                        {
+                          "id": "n-12",
+                          "type": "text",
+                          "text": "ID candidate-1 · r2 · recordable · active / not_requested"
+                        },
+                        {
+                          "id": "n-13",
+                          "type": "text",
+                          "text": "交付物：Changelog；负责人：待补充；截止：待补充；优先级：normal"
+                        },
+                        {
+                          "id": "n-14",
+                          "type": "text",
+                          "text": "s1 · r2：Friday release"
+                        },
+                        {
+                          "id": "n-15",
+                          "type": "media_anchor",
+                          "media_time_ms": 16690,
+                          "label": "s1 · r2"
+                        },
+                        {
+                          "id": "n-16",
+                          "type": "checkbox",
+                          "name": "candidate_id-fed53ee6b0ddd474",
+                          "label": "选择此候选",
+                          "checked": false
+                        }
+                      ]
+                    },
+                    {
+                      "id": "n-18",
+                      "type": "button",
+                      "label": "保存候选选择",
+                      "action_id": "select_candidates"
+                    },
+                    {
+                      "id": "n-19",
+                      "type": "button",
+                      "label": "执行到 Linear（主程序确认）",
+                      "action_id": "execute"
+                    },
+                    {
+                      "id": "n-20",
+                      "type": "text",
+                      "text": "可用性、固定团队、候选范围和写入额度由主程序显示并验证。缺少 Linear 配置不影响问答和本地标记。"
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "id": "tab-marks",
+              "label": "重点与证据",
+              "children": [
+                {
+                  "type": "section",
+                  "id": "marks",
+                  "title": "重点与证据",
+                  "children": [
+                    {
+                      "id": "n-26",
+                      "type": "card",
+                      "title": "Release date",
+                      "children": [
+                        {
+                          "id": "n-21",
+                          "type": "text",
+                          "text": "ID mark-1 · automatic · decision · candidate"
+                        },
+                        {
+                          "id": "n-22",
+                          "type": "text",
+                          "text": "Confirm the date"
+                        },
+                        {
+                          "id": "n-23",
+                          "type": "media_anchor",
+                          "media_time_ms": 16690,
+                          "label": "来源视频坐标"
+                        },
+                        {
+                          "id": "n-24",
+                          "type": "text",
+                          "text": "s1 · r2：Friday release"
+                        },
+                        {
+                          "id": "n-25",
+                          "type": "checkbox",
+                          "name": "mark_id-0e2631e9cfa81c81",
+                          "label": "选作问题证据",
+                          "checked": false
+                        }
+                      ]
+                    },
+                    {
+                      "id": "n-27",
+                      "type": "list",
+                      "items": [
+                        {
+                          "id": "highlights-0",
+                          "primary": "重点：Preserve source evidence",
+                          "secondary": "来源：s1 · r2"
+                        }
+                      ]
+                    },
+                    {
+                      "id": "n-28",
+                      "type": "button",
+                      "label": "保存证据选择",
+                      "action_id": "select_marks"
+                    },
+                    {
+                      "id": "n-29",
+                      "type": "input",
+                      "name": "mark_title",
+                      "label": "手动重点标题"
+                    },
+                    {
+                      "id": "n-30",
+                      "type": "textarea",
+                      "name": "mark_note",
+                      "label": "补充说明",
+                      "rows": 2
+                    },
+                    {
+                      "id": "n-31",
+                      "type": "button",
+                      "label": "添加当前字幕重点（主程序确认）",
+                      "action_id": "mark_create"
+                    },
+                    {
+                      "id": "n-32",
+                      "type": "text",
+                      "text": "当前字幕的 ID、修订和时间由主程序取证；不能仅凭插件表单指定来源。"
+                    },
+                    {
+                      "id": "n-33",
+                      "type": "select",
+                      "name": "mark_id",
+                      "label": "要处理的重点",
+                      "options": [
+                        {
+                          "id": "mark-option-0",
+                          "label": "Release date",
+                          "value": "mark-1"
+                        }
+                      ]
+                    },
+                    {
+                      "id": "n-34",
+                      "type": "button",
+                      "label": "接受重点（主程序确认）",
+                      "action_id": "mark_accept"
+                    },
+                    {
+                      "id": "n-35",
+                      "type": "button",
+                      "label": "忽略重点（主程序确认）",
+                      "action_id": "mark_dismiss"
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "id": "tab-executions",
+              "label": "执行进度",
+              "children": [
+                {
+                  "type": "section",
+                  "id": "executions",
+                  "title": "执行进度",
+                  "children": [
+                    {
+                      "id": "n-36",
+                      "type": "badge",
+                      "text": "needs_input",
+                      "tone": "warning"
+                    },
+                    {
+                      "id": "n-37",
+                      "type": "text",
+                      "text": "执行 exec-1\n根执行 root-1\n父执行 root-1\n版本 2 · 步骤 1"
+                    },
+                    {
+                      "id": "n-38",
+                      "type": "text",
+                      "text": "What changed?"
+                    },
+                    {
+                      "id": "n-39",
+                      "type": "text",
+                      "text": "外部副作用：已确认 0，未知 0。取消不会删除已创建任务。"
+                    },
+                    {
+                      "id": "n-40",
+                      "type": "text",
+                      "text": "Which release?"
+                    },
+                    {
+                      "id": "n-41",
+                      "type": "text",
+                      "text": "选项：A；B"
+                    },
+                    {
+                      "id": "n-42",
+                      "type": "textarea",
+                      "name": "input",
+                      "label": "补充信息",
+                      "rows": 2
+                    },
+                    {
+                      "id": "n-43",
+                      "type": "button",
+                      "label": "提交补充信息（主程序确认）",
+                      "action_id": "input"
+                    },
+                    {
+                      "id": "n-44",
+                      "type": "button",
+                      "label": "取消执行（主程序确认）",
+                      "action_id": "cancel"
+                    },
+                    {
+                      "id": "n-45",
+                      "type": "text",
+                      "text": "Keep the evidence."
+                    },
+                    {
+                      "id": "n-46",
+                      "type": "text",
+                      "text": "task.create · succeeded"
+                    },
+                    {
+                      "id": "n-47",
+                      "type": "safe_markdown",
+                      "markdown": "[Linear 任务](https://linear.app/demo/issue/DEMO-1)"
+                    },
+                    {
+                      "id": "n-48",
+                      "type": "text",
+                      "text": "DEMO-1"
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "id": "tab-history",
+              "label": "历史记录",
+              "children": [
+                {
+                  "type": "section",
+                  "id": "history",
+                  "title": "历史记录",
+                  "children": [
+                    {
+                      "id": "n-49",
+                      "type": "text",
+                      "text": "原会话：legacy-1 · 当前分页偏移 0"
+                    },
+                    {
+                      "id": "n-50",
+                      "type": "list",
+                      "items": [
+                        {
+                          "id": "execution-0",
+                          "primary": "What changed?",
+                          "secondary": "exec-1 · needs_input · 根 root-1 · 2026-08-31T12:00:00Z"
+                        }
+                      ]
+                    },
+                    {
+                      "id": "n-51",
+                      "type": "select",
+                      "name": "execution_id",
+                      "label": "执行详情",
+                      "options": [
+                        {
+                          "id": "execution-option-0",
+                          "label": "What changed? · needs_input",
+                          "value": "exec-1"
+                        }
+                      ]
+                    },
+                    {
+                      "id": "n-52",
+                      "type": "button",
+                      "label": "查看执行详情",
+                      "action_id": "select_execution"
+                    },
+                    {
+                      "id": "n-53",
+                      "type": "table",
+                      "columns": [
+                        {
+                          "id": "kind",
+                          "label": "步骤"
+                        },
+                        {
+                          "id": "status",
+                          "label": "状态"
+                        }
+                      ],
+                      "rows": [
+                        {
+                          "kind": "tool",
+                          "status": "succeeded"
+                        }
+                      ]
+                    },
+                    {
+                      "id": "n-54",
+                      "type": "text",
+                      "text": "执行详情分页偏移：0"
+                    },
+                    {
+                      "id": "n-55",
+                      "type": "text",
+                      "text": "历史沿用原记录 ID 与父子链。插件停用或卸载后，请从主程序历史目录只读查看。"
+                    }
+                  ]
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    "actions": [
+      {
+        "id": "analysis_deactivate",
+        "kind": "command",
+        "command": "analysis_deactivate"
+      },
+      {
+        "id": "ask",
+        "kind": "command",
+        "command": "ask"
+      },
+      {
+        "id": "cancel",
+        "kind": "command",
+        "command": "cancel"
+      },
+      {
+        "id": "execute",
+        "kind": "command",
+        "command": "execute"
+      },
+      {
+        "id": "input",
+        "kind": "command",
+        "command": "input"
+      },
+      {
+        "id": "mark_accept",
+        "kind": "command",
+        "command": "mark_accept"
+      },
+      {
+        "id": "mark_create",
+        "kind": "command",
+        "command": "mark_create"
+      },
+      {
+        "id": "mark_dismiss",
+        "kind": "command",
+        "command": "mark_dismiss"
+      },
+      {
+        "id": "refresh",
+        "kind": "command",
+        "command": "refresh"
+      },
+      {
+        "id": "select_candidates",
+        "kind": "command",
+        "command": "select_candidates"
+      },
+      {
+        "id": "select_execution",
+        "kind": "command",
+        "command": "select_execution"
+      },
+      {
+        "id": "select_marks",
+        "kind": "command",
+        "command": "select_marks"
+      }
+    ]
+  },
+  "unknown": {
+    "schema_version": 1,
+    "surface": "panel",
+    "view_id": "meeting-assistant",
+    "view_version": 1,
+    "root": {
+      "type": "section",
+      "id": "meeting",
+      "title": "私人会议助手",
+      "children": [
+        {
+          "type": "section",
+          "id": "analysis",
+          "title": "本次会议分析",
+          "children": [
+            {
+              "id": "n-1",
+              "type": "badge",
+              "text": "已更新",
+              "tone": "success"
+            },
+            {
+              "id": "n-2",
+              "type": "metric",
+              "label": "当前 Final",
+              "value": "已处理 2 / 2",
+              "detail": "待处理 0（不使用插件 ACK 计数）"
+            },
+            {
+              "id": "n-3",
+              "type": "progress",
+              "label": "当前字幕处理进度",
+              "value": 100
+            },
+            {
+              "id": "n-4",
+              "type": "text",
+              "text": "最近更新：2026-08-31T12:00:00Z"
+            },
+            {
+              "id": "n-5",
+              "type": "button",
+              "label": "刷新状态",
+              "action_id": "refresh"
+            },
+            {
+              "id": "n-6",
+              "type": "button",
+              "label": "停止本次分析（主程序确认）",
+              "action_id": "analysis_deactivate"
+            },
+            {
+              "id": "n-7",
+              "type": "text",
+              "text": "打开插件不会自动分析。问答、标记和执行均需主程序确认；停止分析不会撤销已有任务。"
+            }
+          ]
+        },
+        {
+          "id": "n-53",
+          "type": "tabs",
+          "tabs": [
+            {
+              "id": "tab-ask",
+              "label": "私密问答",
+              "children": [
+                {
+                  "type": "section",
+                  "id": "ask",
+                  "title": "私密问答",
+                  "children": [
+                    {
+                      "id": "n-8",
+                      "type": "text",
+                      "text": "私密回复仅在本会话展示，不广播给其他插件。"
+                    },
+                    {
+                      "id": "n-9",
+                      "type": "textarea",
+                      "name": "message",
+                      "label": "私密问题或执行目标",
+                      "placeholder": "结合会议重点与选中的证据提问",
+                      "rows": 3
+                    },
+                    {
+                      "id": "n-10",
+                      "type": "button",
+                      "label": "询问（主程序确认）",
+                      "action_id": "ask"
+                    },
+                    {
+                      "id": "n-11",
+                      "type": "empty_state",
+                      "title": "暂无私密回复",
+                      "message": "已完成的问答会保存在原执行历史中。"
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "id": "tab-candidates",
+              "label": "待办候选",
+              "children": [
+                {
+                  "type": "section",
+                  "id": "candidates",
+                  "title": "待办候选",
+                  "children": [
+                    {
+                      "id": "n-17",
+                      "type": "card",
+                      "title": "Release notes",
+                      "children": [
+                        {
+                          "id": "n-12",
+                          "type": "text",
+                          "text": "ID candidate-1 · r2 · recordable · active / not_requested"
+                        },
+                        {
+                          "id": "n-13",
+                          "type": "text",
+                          "text": "交付物：Changelog；负责人：待补充；截止：待补充；优先级：normal"
+                        },
+                        {
+                          "id": "n-14",
+                          "type": "text",
+                          "text": "s1 · r2：Friday release"
+                        },
+                        {
+                          "id": "n-15",
+                          "type": "media_anchor",
+                          "media_time_ms": 16690,
+                          "label": "s1 · r2"
+                        },
+                        {
+                          "id": "n-16",
+                          "type": "checkbox",
+                          "name": "candidate_id-fed53ee6b0ddd474",
+                          "label": "选择此候选",
+                          "checked": false
+                        }
+                      ]
+                    },
+                    {
+                      "id": "n-18",
+                      "type": "button",
+                      "label": "保存候选选择",
+                      "action_id": "select_candidates"
+                    },
+                    {
+                      "id": "n-19",
+                      "type": "button",
+                      "label": "执行到 Linear（主程序确认）",
+                      "action_id": "execute"
+                    },
+                    {
+                      "id": "n-20",
+                      "type": "text",
+                      "text": "可用性、固定团队、候选范围和写入额度由主程序显示并验证。缺少 Linear 配置不影响问答和本地标记。"
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "id": "tab-marks",
+              "label": "重点与证据",
+              "children": [
+                {
+                  "type": "section",
+                  "id": "marks",
+                  "title": "重点与证据",
+                  "children": [
+                    {
+                      "id": "n-26",
+                      "type": "card",
+                      "title": "Release date",
+                      "children": [
+                        {
+                          "id": "n-21",
+                          "type": "text",
+                          "text": "ID mark-1 · automatic · decision · candidate"
+                        },
+                        {
+                          "id": "n-22",
+                          "type": "text",
+                          "text": "Confirm the date"
+                        },
+                        {
+                          "id": "n-23",
+                          "type": "media_anchor",
+                          "media_time_ms": 16690,
+                          "label": "来源视频坐标"
+                        },
+                        {
+                          "id": "n-24",
+                          "type": "text",
+                          "text": "s1 · r2：Friday release"
+                        },
+                        {
+                          "id": "n-25",
+                          "type": "checkbox",
+                          "name": "mark_id-0e2631e9cfa81c81",
+                          "label": "选作问题证据",
+                          "checked": false
+                        }
+                      ]
+                    },
+                    {
+                      "id": "n-27",
+                      "type": "list",
+                      "items": [
+                        {
+                          "id": "highlights-0",
+                          "primary": "重点：Preserve source evidence",
+                          "secondary": "来源：s1 · r2"
+                        }
+                      ]
+                    },
+                    {
+                      "id": "n-28",
+                      "type": "button",
+                      "label": "保存证据选择",
+                      "action_id": "select_marks"
+                    },
+                    {
+                      "id": "n-29",
+                      "type": "input",
+                      "name": "mark_title",
+                      "label": "手动重点标题"
+                    },
+                    {
+                      "id": "n-30",
+                      "type": "textarea",
+                      "name": "mark_note",
+                      "label": "补充说明",
+                      "rows": 2
+                    },
+                    {
+                      "id": "n-31",
+                      "type": "button",
+                      "label": "添加当前字幕重点（主程序确认）",
+                      "action_id": "mark_create"
+                    },
+                    {
+                      "id": "n-32",
+                      "type": "text",
+                      "text": "当前字幕的 ID、修订和时间由主程序取证；不能仅凭插件表单指定来源。"
+                    },
+                    {
+                      "id": "n-33",
+                      "type": "select",
+                      "name": "mark_id",
+                      "label": "要处理的重点",
+                      "options": [
+                        {
+                          "id": "mark-option-0",
+                          "label": "Release date",
+                          "value": "mark-1"
+                        }
+                      ]
+                    },
+                    {
+                      "id": "n-34",
+                      "type": "button",
+                      "label": "接受重点（主程序确认）",
+                      "action_id": "mark_accept"
+                    },
+                    {
+                      "id": "n-35",
+                      "type": "button",
+                      "label": "忽略重点（主程序确认）",
+                      "action_id": "mark_dismiss"
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "id": "tab-executions",
+              "label": "执行进度",
+              "children": [
+                {
+                  "type": "section",
+                  "id": "executions",
+                  "title": "执行进度",
+                  "children": [
+                    {
+                      "id": "n-36",
+                      "type": "badge",
+                      "text": "reconciling",
+                      "tone": "info"
+                    },
+                    {
+                      "id": "n-37",
+                      "type": "text",
+                      "text": "执行 exec-1\n根执行 root-1\n父执行 root-1\n版本 2 · 步骤 1"
+                    },
+                    {
+                      "id": "n-38",
+                      "type": "text",
+                      "text": "What changed?"
+                    },
+                    {
+                      "id": "n-39",
+                      "type": "text",
+                      "text": "外部副作用：已确认 1，未知 1。取消不会删除已创建任务。"
+                    },
+                    {
+                      "id": "n-40",
+                      "type": "error_state",
+                      "title": "存在未知结果",
+                      "message": "仅核对已发出的请求；不要再次创建相同任务。"
+                    },
+                    {
+                      "id": "n-41",
+                      "type": "button",
+                      "label": "取消执行（主程序确认）",
+                      "action_id": "cancel"
+                    },
+                    {
+                      "id": "n-42",
+                      "type": "text",
+                      "text": "Keep the evidence."
+                    },
+                    {
+                      "id": "n-43",
+                      "type": "text",
+                      "text": "task.create · succeeded"
+                    },
+                    {
+                      "id": "n-44",
+                      "type": "safe_markdown",
+                      "markdown": "[Linear 任务](https://linear.app/demo/issue/DEMO-1)"
+                    },
+                    {
+                      "id": "n-45",
+                      "type": "text",
+                      "text": "DEMO-1"
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "id": "tab-history",
+              "label": "历史记录",
+              "children": [
+                {
+                  "type": "section",
+                  "id": "history",
+                  "title": "历史记录",
+                  "children": [
+                    {
+                      "id": "n-46",
+                      "type": "text",
+                      "text": "原会话：legacy-1 · 当前分页偏移 0"
+                    },
+                    {
+                      "id": "n-47",
+                      "type": "list",
+                      "items": [
+                        {
+                          "id": "execution-0",
+                          "primary": "What changed?",
+                          "secondary": "exec-1 · reconciling · 根 root-1 · 2026-08-31T12:00:00Z"
+                        }
+                      ]
+                    },
+                    {
+                      "id": "n-48",
+                      "type": "select",
+                      "name": "execution_id",
+                      "label": "执行详情",
+                      "options": [
+                        {
+                          "id": "execution-option-0",
+                          "label": "What changed? · reconciling",
+                          "value": "exec-1"
+                        }
+                      ]
+                    },
+                    {
+                      "id": "n-49",
+                      "type": "button",
+                      "label": "查看执行详情",
+                      "action_id": "select_execution"
+                    },
+                    {
+                      "id": "n-50",
+                      "type": "table",
+                      "columns": [
+                        {
+                          "id": "kind",
+                          "label": "步骤"
+                        },
+                        {
+                          "id": "status",
+                          "label": "状态"
+                        }
+                      ],
+                      "rows": [
+                        {
+                          "kind": "tool",
+                          "status": "succeeded"
+                        }
+                      ]
+                    },
+                    {
+                      "id": "n-51",
+                      "type": "text",
+                      "text": "执行详情分页偏移：0"
+                    },
+                    {
+                      "id": "n-52",
+                      "type": "text",
+                      "text": "历史沿用原记录 ID 与父子链。插件停用或卸载后，请从主程序历史目录只读查看。"
+                    }
+                  ]
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    "actions": [
+      {
+        "id": "analysis_deactivate",
+        "kind": "command",
+        "command": "analysis_deactivate"
+      },
+      {
+        "id": "ask",
+        "kind": "command",
+        "command": "ask"
+      },
+      {
+        "id": "cancel",
+        "kind": "command",
+        "command": "cancel"
+      },
+      {
+        "id": "execute",
+        "kind": "command",
+        "command": "execute"
+      },
+      {
+        "id": "mark_accept",
+        "kind": "command",
+        "command": "mark_accept"
+      },
+      {
+        "id": "mark_create",
+        "kind": "command",
+        "command": "mark_create"
+      },
+      {
+        "id": "mark_dismiss",
+        "kind": "command",
+        "command": "mark_dismiss"
+      },
+      {
+        "id": "refresh",
+        "kind": "command",
+        "command": "refresh"
+      },
+      {
+        "id": "select_candidates",
+        "kind": "command",
+        "command": "select_candidates"
+      },
+      {
+        "id": "select_execution",
+        "kind": "command",
+        "command": "select_execution"
+      },
+      {
+        "id": "select_marks",
+        "kind": "command",
+        "command": "select_marks"
+      }
+    ]
+  },
+  "history": {
+    "schema_version": 1,
+    "surface": "panel",
+    "view_id": "meeting-assistant",
+    "view_version": 1,
+    "root": {
+      "type": "section",
+      "id": "meeting",
+      "title": "私人会议助手",
+      "children": [
+        {
+          "type": "section",
+          "id": "analysis",
+          "title": "本次会议分析",
+          "children": [
+            {
+              "id": "n-1",
+              "type": "badge",
+              "text": "只读历史",
+              "tone": "neutral"
+            },
+            {
+              "id": "n-2",
+              "type": "metric",
+              "label": "当前 Final",
+              "value": "已处理 2 / 2",
+              "detail": "待处理 0（不使用插件 ACK 计数）"
+            },
+            {
+              "id": "n-3",
+              "type": "progress",
+              "label": "当前字幕处理进度",
+              "value": 100
+            },
+            {
+              "id": "n-4",
+              "type": "text",
+              "text": "最近更新：2026-08-31T12:00:00Z"
+            },
+            {
+              "id": "n-5",
+              "type": "button",
+              "label": "刷新状态",
+              "action_id": "refresh"
+            },
+            {
+              "id": "n-6",
+              "type": "text",
+              "text": "打开插件不会自动分析。问答、标记和执行均需主程序确认；停止分析不会撤销已有任务。"
+            }
+          ]
+        },
+        {
+          "id": "n-36",
+          "type": "tabs",
+          "tabs": [
+            {
+              "id": "tab-ask",
+              "label": "私密问答",
+              "children": [
+                {
+                  "type": "section",
+                  "id": "ask",
+                  "title": "私密问答",
+                  "children": [
+                    {
+                      "id": "n-7",
+                      "type": "text",
+                      "text": "私密回复仅在本会话展示，不广播给其他插件。"
+                    },
+                    {
+                      "id": "n-8",
+                      "type": "empty_state",
+                      "title": "暂无私密回复",
+                      "message": "已完成的问答会保存在原执行历史中。"
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "id": "tab-candidates",
+              "label": "待办候选",
+              "children": [
+                {
+                  "type": "section",
+                  "id": "candidates",
+                  "title": "待办候选",
+                  "children": [
+                    {
+                      "id": "n-13",
+                      "type": "card",
+                      "title": "Release notes",
+                      "children": [
+                        {
+                          "id": "n-9",
+                          "type": "text",
+                          "text": "ID candidate-1 · r2 · recordable · active / not_requested"
+                        },
+                        {
+                          "id": "n-10",
+                          "type": "text",
+                          "text": "交付物：Changelog；负责人：待补充；截止：待补充；优先级：normal"
+                        },
+                        {
+                          "id": "n-11",
+                          "type": "text",
+                          "text": "s1 · r2：Friday release"
+                        },
+                        {
+                          "id": "n-12",
+                          "type": "media_anchor",
+                          "media_time_ms": 16690,
+                          "label": "s1 · r2"
+                        }
+                      ]
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "id": "tab-marks",
+              "label": "重点与证据",
+              "children": [
+                {
+                  "type": "section",
+                  "id": "marks",
+                  "title": "重点与证据",
+                  "children": [
+                    {
+                      "id": "n-18",
+                      "type": "card",
+                      "title": "Release date",
+                      "children": [
+                        {
+                          "id": "n-14",
+                          "type": "text",
+                          "text": "ID mark-1 · automatic · decision · candidate"
+                        },
+                        {
+                          "id": "n-15",
+                          "type": "text",
+                          "text": "Confirm the date"
+                        },
+                        {
+                          "id": "n-16",
+                          "type": "media_anchor",
+                          "media_time_ms": 16690,
+                          "label": "来源视频坐标"
+                        },
+                        {
+                          "id": "n-17",
+                          "type": "text",
+                          "text": "s1 · r2：Friday release"
+                        }
+                      ]
+                    },
+                    {
+                      "id": "n-19",
+                      "type": "list",
+                      "items": [
+                        {
+                          "id": "highlights-0",
+                          "primary": "重点：Preserve source evidence",
+                          "secondary": "来源：s1 · r2"
+                        }
+                      ]
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "id": "tab-executions",
+              "label": "执行进度",
+              "children": [
+                {
+                  "type": "section",
+                  "id": "executions",
+                  "title": "执行进度",
+                  "children": [
+                    {
+                      "id": "n-20",
+                      "type": "badge",
+                      "text": "reconciling",
+                      "tone": "info"
+                    },
+                    {
+                      "id": "n-21",
+                      "type": "text",
+                      "text": "执行 exec-1\n根执行 root-1\n父执行 root-1\n版本 2 · 步骤 1"
+                    },
+                    {
+                      "id": "n-22",
+                      "type": "text",
+                      "text": "What changed?"
+                    },
+                    {
+                      "id": "n-23",
+                      "type": "text",
+                      "text": "外部副作用：已确认 1，未知 1。取消不会删除已创建任务。"
+                    },
+                    {
+                      "id": "n-24",
+                      "type": "error_state",
+                      "title": "存在未知结果",
+                      "message": "仅核对已发出的请求；不要再次创建相同任务。"
+                    },
+                    {
+                      "id": "n-25",
+                      "type": "text",
+                      "text": "Keep the evidence."
+                    },
+                    {
+                      "id": "n-26",
+                      "type": "text",
+                      "text": "task.create · succeeded"
+                    },
+                    {
+                      "id": "n-27",
+                      "type": "safe_markdown",
+                      "markdown": "[Linear 任务](https://linear.app/demo/issue/DEMO-1)"
+                    },
+                    {
+                      "id": "n-28",
+                      "type": "text",
+                      "text": "DEMO-1"
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "id": "tab-history",
+              "label": "历史记录",
+              "children": [
+                {
+                  "type": "section",
+                  "id": "history",
+                  "title": "历史记录",
+                  "children": [
+                    {
+                      "id": "n-29",
+                      "type": "text",
+                      "text": "原会话：legacy-1 · 当前分页偏移 0"
+                    },
+                    {
+                      "id": "n-30",
+                      "type": "list",
+                      "items": [
+                        {
+                          "id": "execution-0",
+                          "primary": "What changed?",
+                          "secondary": "exec-1 · reconciling · 根 root-1 · 2026-08-31T12:00:00Z"
+                        }
+                      ]
+                    },
+                    {
+                      "id": "n-31",
+                      "type": "select",
+                      "name": "execution_id",
+                      "label": "执行详情",
+                      "options": [
+                        {
+                          "id": "execution-option-0",
+                          "label": "What changed? · reconciling",
+                          "value": "exec-1"
+                        }
+                      ]
+                    },
+                    {
+                      "id": "n-32",
+                      "type": "button",
+                      "label": "查看执行详情",
+                      "action_id": "select_execution"
+                    },
+                    {
+                      "id": "n-33",
+                      "type": "table",
+                      "columns": [
+                        {
+                          "id": "kind",
+                          "label": "步骤"
+                        },
+                        {
+                          "id": "status",
+                          "label": "状态"
+                        }
+                      ],
+                      "rows": [
+                        {
+                          "kind": "tool",
+                          "status": "succeeded"
+                        }
+                      ]
+                    },
+                    {
+                      "id": "n-34",
+                      "type": "text",
+                      "text": "执行详情分页偏移：0"
+                    },
+                    {
+                      "id": "n-35",
+                      "type": "text",
+                      "text": "历史沿用原记录 ID 与父子链。插件停用或卸载后，请从主程序历史目录只读查看。"
+                    }
+                  ]
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    "actions": [
+      {
+        "id": "refresh",
+        "kind": "command",
+        "command": "refresh"
+      },
+      {
+        "id": "select_execution",
+        "kind": "command",
+        "command": "select_execution"
+      }
+    ]
+  },
+  "query_failed": {
+    "schema_version": 1,
+    "surface": "panel",
+    "view_id": "meeting-assistant",
+    "view_version": 1,
+    "root": {
+      "type": "section",
+      "id": "meeting",
+      "title": "私人会议助手",
+      "children": [
+        {
+          "type": "section",
+          "id": "analysis",
+          "title": "本次会议分析",
+          "children": [
+            {
+              "id": "n-1",
+              "type": "badge",
+              "text": "已更新",
+              "tone": "success"
+            },
+            {
+              "id": "n-2",
+              "type": "metric",
+              "label": "当前 Final",
+              "value": "已处理 2 / 2",
+              "detail": "待处理 0（不使用插件 ACK 计数）"
+            },
+            {
+              "id": "n-3",
+              "type": "progress",
+              "label": "当前字幕处理进度",
+              "value": 100
+            },
+            {
+              "id": "n-4",
+              "type": "text",
+              "text": "最近更新：2026-08-31T12:00:00Z"
+            },
+            {
+              "id": "n-5",
+              "type": "button",
+              "label": "刷新状态",
+              "action_id": "refresh"
+            },
+            {
+              "id": "n-6",
+              "type": "error_state",
+              "title": "当前读取失败",
+              "message": "已保留上次成功结果和更新时间。检查插件启用及会话权限后刷新。"
+            },
+            {
+              "id": "n-7",
+              "type": "button",
+              "label": "停止本次分析（主程序确认）",
+              "action_id": "analysis_deactivate"
+            },
+            {
+              "id": "n-8",
+              "type": "text",
+              "text": "打开插件不会自动分析。问答、标记和执行均需主程序确认；停止分析不会撤销已有任务。"
+            }
+          ]
+        },
+        {
+          "id": "n-48",
+          "type": "tabs",
+          "tabs": [
+            {
+              "id": "tab-ask",
+              "label": "私密问答",
+              "children": [
+                {
+                  "type": "section",
+                  "id": "ask",
+                  "title": "私密问答",
+                  "children": [
+                    {
+                      "id": "n-9",
+                      "type": "text",
+                      "text": "私密回复仅在本会话展示，不广播给其他插件。"
+                    },
+                    {
+                      "id": "n-10",
+                      "type": "textarea",
+                      "name": "message",
+                      "label": "私密问题或执行目标",
+                      "placeholder": "结合会议重点与选中的证据提问",
+                      "rows": 3
+                    },
+                    {
+                      "id": "n-11",
+                      "type": "button",
+                      "label": "询问（主程序确认）",
+                      "action_id": "ask"
+                    },
+                    {
+                      "id": "n-13",
+                      "type": "card",
+                      "title": "What changed?",
+                      "children": [
+                        {
+                          "id": "n-12",
+                          "type": "text",
+                          "text": "Keep the evidence."
+                        }
+                      ]
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "id": "tab-candidates",
+              "label": "待办候选",
+              "children": [
+                {
+                  "type": "section",
+                  "id": "candidates",
+                  "title": "待办候选",
+                  "children": [
+                    {
+                      "id": "n-19",
+                      "type": "card",
+                      "title": "Release notes",
+                      "children": [
+                        {
+                          "id": "n-14",
+                          "type": "text",
+                          "text": "ID candidate-1 · r2 · recordable · active / not_requested"
+                        },
+                        {
+                          "id": "n-15",
+                          "type": "text",
+                          "text": "交付物：Changelog；负责人：待补充；截止：待补充；优先级：normal"
+                        },
+                        {
+                          "id": "n-16",
+                          "type": "text",
+                          "text": "s1 · r2：Friday release"
+                        },
+                        {
+                          "id": "n-17",
+                          "type": "media_anchor",
+                          "media_time_ms": 16690,
+                          "label": "s1 · r2"
+                        },
+                        {
+                          "id": "n-18",
+                          "type": "checkbox",
+                          "name": "candidate_id-fed53ee6b0ddd474",
+                          "label": "选择此候选",
+                          "checked": false
+                        }
+                      ]
+                    },
+                    {
+                      "id": "n-20",
+                      "type": "button",
+                      "label": "保存候选选择",
+                      "action_id": "select_candidates"
+                    },
+                    {
+                      "id": "n-21",
+                      "type": "button",
+                      "label": "执行到 Linear（主程序确认）",
+                      "action_id": "execute"
+                    },
+                    {
+                      "id": "n-22",
+                      "type": "text",
+                      "text": "可用性、固定团队、候选范围和写入额度由主程序显示并验证。缺少 Linear 配置不影响问答和本地标记。"
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "id": "tab-marks",
+              "label": "重点与证据",
+              "children": [
+                {
+                  "type": "section",
+                  "id": "marks",
+                  "title": "重点与证据",
+                  "children": [
+                    {
+                      "id": "n-28",
+                      "type": "card",
+                      "title": "Release date",
+                      "children": [
+                        {
+                          "id": "n-23",
+                          "type": "text",
+                          "text": "ID mark-1 · automatic · decision · candidate"
+                        },
+                        {
+                          "id": "n-24",
+                          "type": "text",
+                          "text": "Confirm the date"
+                        },
+                        {
+                          "id": "n-25",
+                          "type": "media_anchor",
+                          "media_time_ms": 16690,
+                          "label": "来源视频坐标"
+                        },
+                        {
+                          "id": "n-26",
+                          "type": "text",
+                          "text": "s1 · r2：Friday release"
+                        },
+                        {
+                          "id": "n-27",
+                          "type": "checkbox",
+                          "name": "mark_id-0e2631e9cfa81c81",
+                          "label": "选作问题证据",
+                          "checked": false
+                        }
+                      ]
+                    },
+                    {
+                      "id": "n-29",
+                      "type": "list",
+                      "items": [
+                        {
+                          "id": "highlights-0",
+                          "primary": "重点：Preserve source evidence",
+                          "secondary": "来源：s1 · r2"
+                        }
+                      ]
+                    },
+                    {
+                      "id": "n-30",
+                      "type": "button",
+                      "label": "保存证据选择",
+                      "action_id": "select_marks"
+                    },
+                    {
+                      "id": "n-31",
+                      "type": "input",
+                      "name": "mark_title",
+                      "label": "手动重点标题"
+                    },
+                    {
+                      "id": "n-32",
+                      "type": "textarea",
+                      "name": "mark_note",
+                      "label": "补充说明",
+                      "rows": 2
+                    },
+                    {
+                      "id": "n-33",
+                      "type": "button",
+                      "label": "添加当前字幕重点（主程序确认）",
+                      "action_id": "mark_create"
+                    },
+                    {
+                      "id": "n-34",
+                      "type": "text",
+                      "text": "当前字幕的 ID、修订和时间由主程序取证；不能仅凭插件表单指定来源。"
+                    },
+                    {
+                      "id": "n-35",
+                      "type": "select",
+                      "name": "mark_id",
+                      "label": "要处理的重点",
+                      "options": [
+                        {
+                          "id": "mark-option-0",
+                          "label": "Release date",
+                          "value": "mark-1"
+                        }
+                      ]
+                    },
+                    {
+                      "id": "n-36",
+                      "type": "button",
+                      "label": "接受重点（主程序确认）",
+                      "action_id": "mark_accept"
+                    },
+                    {
+                      "id": "n-37",
+                      "type": "button",
+                      "label": "忽略重点（主程序确认）",
+                      "action_id": "mark_dismiss"
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "id": "tab-executions",
+              "label": "执行进度",
+              "children": [
+                {
+                  "type": "section",
+                  "id": "executions",
+                  "title": "执行进度",
+                  "children": [
+                    {
+                      "id": "n-38",
+                      "type": "badge",
+                      "text": "completed",
+                      "tone": "info"
+                    },
+                    {
+                      "id": "n-39",
+                      "type": "text",
+                      "text": "执行 exec-1\n根执行 root-1\n父执行 root-1\n版本 2 · 步骤 1"
+                    },
+                    {
+                      "id": "n-40",
+                      "type": "text",
+                      "text": "What changed?"
+                    },
+                    {
+                      "id": "n-41",
+                      "type": "text",
+                      "text": "外部副作用：已确认 0，未知 0。取消不会删除已创建任务。"
+                    },
+                    {
+                      "id": "n-42",
+                      "type": "text",
+                      "text": "Keep the evidence."
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "id": "tab-history",
+              "label": "历史记录",
+              "children": [
+                {
+                  "type": "section",
+                  "id": "history",
+                  "title": "历史记录",
+                  "children": [
+                    {
+                      "id": "n-43",
+                      "type": "text",
+                      "text": "原会话：legacy-1 · 当前分页偏移 0"
+                    },
+                    {
+                      "id": "n-44",
+                      "type": "list",
+                      "items": [
+                        {
+                          "id": "execution-0",
+                          "primary": "What changed?",
+                          "secondary": "exec-1 · completed · 根 root-1 · 2026-08-31T12:00:00Z"
+                        }
+                      ]
+                    },
+                    {
+                      "id": "n-45",
+                      "type": "select",
+                      "name": "execution_id",
+                      "label": "执行详情",
+                      "options": [
+                        {
+                          "id": "execution-option-0",
+                          "label": "What changed? · completed",
+                          "value": "exec-1"
+                        }
+                      ]
+                    },
+                    {
+                      "id": "n-46",
+                      "type": "button",
+                      "label": "查看执行详情",
+                      "action_id": "select_execution"
+                    },
+                    {
+                      "id": "n-47",
+                      "type": "text",
+                      "text": "历史沿用原记录 ID 与父子链。插件停用或卸载后，请从主程序历史目录只读查看。"
+                    }
+                  ]
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    "actions": [
+      {
+        "id": "analysis_deactivate",
+        "kind": "command",
+        "command": "analysis_deactivate"
+      },
+      {
+        "id": "ask",
+        "kind": "command",
+        "command": "ask"
+      },
+      {
+        "id": "execute",
+        "kind": "command",
+        "command": "execute"
+      },
+      {
+        "id": "mark_accept",
+        "kind": "command",
+        "command": "mark_accept"
+      },
+      {
+        "id": "mark_create",
+        "kind": "command",
+        "command": "mark_create"
+      },
+      {
+        "id": "mark_dismiss",
+        "kind": "command",
+        "command": "mark_dismiss"
+      },
+      {
+        "id": "refresh",
+        "kind": "command",
+        "command": "refresh"
+      },
+      {
+        "id": "select_candidates",
+        "kind": "command",
+        "command": "select_candidates"
+      },
+      {
+        "id": "select_execution",
+        "kind": "command",
+        "command": "select_execution"
+      },
+      {
+        "id": "select_marks",
+        "kind": "command",
+        "command": "select_marks"
+      }
+    ]
+  },
+  "scope_unavailable": {
+    "schema_version": 1,
+    "surface": "panel",
+    "view_id": "meeting-assistant",
+    "view_version": 1,
+    "root": {
+      "type": "section",
+      "id": "meeting",
+      "title": "私人会议助手",
+      "children": [
+        {
+          "type": "section",
+          "id": "analysis",
+          "title": "本次会议分析",
+          "children": [
+            {
+              "id": "n-1",
+              "type": "badge",
+              "text": "只读历史",
+              "tone": "neutral"
+            },
+            {
+              "id": "n-2",
+              "type": "metric",
+              "label": "当前 Final",
+              "value": "已处理 2 / 2",
+              "detail": "待处理 0（不使用插件 ACK 计数）"
+            },
+            {
+              "id": "n-3",
+              "type": "progress",
+              "label": "当前字幕处理进度",
+              "value": 100
+            },
+            {
+              "id": "n-4",
+              "type": "text",
+              "text": "最近更新：2026-08-31T12:00:00Z"
+            },
+            {
+              "id": "n-5",
+              "type": "button",
+              "label": "刷新状态",
+              "action_id": "refresh"
+            },
+            {
+              "id": "n-6",
+              "type": "error_state",
+              "title": "当前读取失败",
+              "message": "已保留上次成功结果和更新时间。检查插件启用及会话权限后刷新。"
+            },
+            {
+              "id": "n-7",
+              "type": "text",
+              "text": "打开插件不会自动分析。问答、标记和执行均需主程序确认；停止分析不会撤销已有任务。"
+            }
+          ]
+        },
+        {
+          "id": "n-32",
+          "type": "tabs",
+          "tabs": [
+            {
+              "id": "tab-ask",
+              "label": "私密问答",
+              "children": [
+                {
+                  "type": "section",
+                  "id": "ask",
+                  "title": "私密问答",
+                  "children": [
+                    {
+                      "id": "n-8",
+                      "type": "text",
+                      "text": "私密回复仅在本会话展示，不广播给其他插件。"
+                    },
+                    {
+                      "id": "n-10",
+                      "type": "card",
+                      "title": "What changed?",
+                      "children": [
+                        {
+                          "id": "n-9",
+                          "type": "text",
+                          "text": "Keep the evidence."
+                        }
+                      ]
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "id": "tab-candidates",
+              "label": "待办候选",
+              "children": [
+                {
+                  "type": "section",
+                  "id": "candidates",
+                  "title": "待办候选",
+                  "children": [
+                    {
+                      "id": "n-15",
+                      "type": "card",
+                      "title": "Release notes",
+                      "children": [
+                        {
+                          "id": "n-11",
+                          "type": "text",
+                          "text": "ID candidate-1 · r2 · recordable · active / not_requested"
+                        },
+                        {
+                          "id": "n-12",
+                          "type": "text",
+                          "text": "交付物：Changelog；负责人：待补充；截止：待补充；优先级：normal"
+                        },
+                        {
+                          "id": "n-13",
+                          "type": "text",
+                          "text": "s1 · r2：Friday release"
+                        },
+                        {
+                          "id": "n-14",
+                          "type": "media_anchor",
+                          "media_time_ms": 16690,
+                          "label": "s1 · r2"
+                        }
+                      ]
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "id": "tab-marks",
+              "label": "重点与证据",
+              "children": [
+                {
+                  "type": "section",
+                  "id": "marks",
+                  "title": "重点与证据",
+                  "children": [
+                    {
+                      "id": "n-20",
+                      "type": "card",
+                      "title": "Release date",
+                      "children": [
+                        {
+                          "id": "n-16",
+                          "type": "text",
+                          "text": "ID mark-1 · automatic · decision · candidate"
+                        },
+                        {
+                          "id": "n-17",
+                          "type": "text",
+                          "text": "Confirm the date"
+                        },
+                        {
+                          "id": "n-18",
+                          "type": "media_anchor",
+                          "media_time_ms": 16690,
+                          "label": "来源视频坐标"
+                        },
+                        {
+                          "id": "n-19",
+                          "type": "text",
+                          "text": "s1 · r2：Friday release"
+                        }
+                      ]
+                    },
+                    {
+                      "id": "n-21",
+                      "type": "list",
+                      "items": [
+                        {
+                          "id": "highlights-0",
+                          "primary": "重点：Preserve source evidence",
+                          "secondary": "来源：s1 · r2"
+                        }
+                      ]
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "id": "tab-executions",
+              "label": "执行进度",
+              "children": [
+                {
+                  "type": "section",
+                  "id": "executions",
+                  "title": "执行进度",
+                  "children": [
+                    {
+                      "id": "n-22",
+                      "type": "badge",
+                      "text": "completed",
+                      "tone": "info"
+                    },
+                    {
+                      "id": "n-23",
+                      "type": "text",
+                      "text": "执行 exec-1\n根执行 root-1\n父执行 root-1\n版本 2 · 步骤 1"
+                    },
+                    {
+                      "id": "n-24",
+                      "type": "text",
+                      "text": "What changed?"
+                    },
+                    {
+                      "id": "n-25",
+                      "type": "text",
+                      "text": "外部副作用：已确认 0，未知 0。取消不会删除已创建任务。"
+                    },
+                    {
+                      "id": "n-26",
+                      "type": "text",
+                      "text": "Keep the evidence."
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "id": "tab-history",
+              "label": "历史记录",
+              "children": [
+                {
+                  "type": "section",
+                  "id": "history",
+                  "title": "历史记录",
+                  "children": [
+                    {
+                      "id": "n-27",
+                      "type": "text",
+                      "text": "原会话：legacy-1 · 当前分页偏移 0"
+                    },
+                    {
+                      "id": "n-28",
+                      "type": "list",
+                      "items": [
+                        {
+                          "id": "execution-0",
+                          "primary": "What changed?",
+                          "secondary": "exec-1 · completed · 根 root-1 · 2026-08-31T12:00:00Z"
+                        }
+                      ]
+                    },
+                    {
+                      "id": "n-29",
+                      "type": "select",
+                      "name": "execution_id",
+                      "label": "执行详情",
+                      "options": [
+                        {
+                          "id": "execution-option-0",
+                          "label": "What changed? · completed",
+                          "value": "exec-1"
+                        }
+                      ]
+                    },
+                    {
+                      "id": "n-30",
+                      "type": "button",
+                      "label": "查看执行详情",
+                      "action_id": "select_execution"
+                    },
+                    {
+                      "id": "n-31",
+                      "type": "text",
+                      "text": "历史沿用原记录 ID 与父子链。插件停用或卸载后，请从主程序历史目录只读查看。"
+                    }
+                  ]
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    "actions": [
+      {
+        "id": "refresh",
+        "kind": "command",
+        "command": "refresh"
+      },
+      {
+        "id": "select_execution",
+        "kind": "command",
+        "command": "select_execution"
+      }
+    ]
+  }
+}

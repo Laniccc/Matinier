@@ -1,0 +1,30 @@
+[project]
+name = "live-caption-studio-backend"
+version = "0.1.0"
+description = "Stage 0 backend and LiveKit worker for LiveCaption Studio"
+requires-python = ">=3.12,<3.14"
+dependencies = [
+  "alembic>=1.16,<2",
+  "cryptography>=45,<47",
+  "fastapi>=0.116,<1",
+  "httpx>=0.28,<1",
+  "livekit-agents==1.5.11",
+  "livekit-api>=1.0,<2",
+  "pydantic-settings>=2.10,<3",
+  "psutil>=7,<8",
+  "sqlalchemy>=2.0.41,<3",
+  "uvicorn[standard]>=0.35,<1",
+  "websockets>=15,<17",
+]
+
+[dependency-groups]
+dev = [
+  "pytest>=8.4,<9",
+]
+
+[tool.uv]
+package = false
+
+[tool.pytest.ini_options]
+pythonpath = ["."]
+testpaths = ["tests"]
