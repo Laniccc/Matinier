@@ -11,6 +11,9 @@ import {
   resolveMediaSession,
   getAssistantHistorySources,
   getHostActionDescriptors,
+  getAssistantState,
+  approveAssistantAction,
+  rejectAssistantAction,
 } from "@/lib/api";
 import {
   clearAssistantSessionInputs,
@@ -30,6 +33,14 @@ import type {
   HostHistorySource,
 } from "@/types/plugins";
 import type { HostActionDescriptor } from "@/types/host-actions";
+import type { AssistantExecutionStatus, PendingActionApproval } from "@/types/assistant";
+
+
+export interface ActionApprovalItem {
+  approval: PendingActionApproval;
+  executionStatus: AssistantExecutionStatus;
+  expectedStateVersion: number;
+}
 
 
 interface WorkspaceErrors {
@@ -72,6 +83,8 @@ export function useMediaAssistantWorkspace(legacySessionId: string | null) {
   const [historySources, setHistorySources] = useState<HostHistorySource[]>([]);
   const [hostActions, setHostActions] = useState<HostActionDescriptor[]>([]);
   const [hostError, setHostError] = useState<string | null>(null);
+  const [approvals, setApprovals] = useState<ActionApprovalItem[]>([]);
+  const [approvalBusyIds, setApprovalBusyIds] = useState<Set<string>>(new Set());
   const [inputs, setInputs] = useState<AssistantViewInputState>({});
   const [busyViewKeys, setBusyViewKeys] = useState<Set<string>>(new Set());
   const [loading, setLoading] = useState(false);
@@ -112,6 +125,31 @@ export function useMediaAssistantWorkspace(legacySessionId: string | null) {
     const timer = window.setInterval(() => void refreshHost(), 2000);
     return () => { disposed = true; window.clearInterval(timer); };
   }, [legacySessionId, mediaSessionId]);
+
+  useEffect(() => {
+    let disposed = false;
+    setApprovals([]);
+    if (!legacySessionId) return;
+    async function refreshApprovals() {
+      try {
+        const state = await getAssistantState(legacySessionId!);
+        if (disposed) return;
+        const rows = [...state.active_executions, ...state.recent_terminal_executions]
+          .filter((row) => row.pending_approval)
+          .map((row) => ({
+            approval: row.pending_approval!,
+            executionStatus: row.status,
+            expectedStateVersion: row.state_version,
+          }));
+        setApprovals(rows);
+      } catch {
+        if (!disposed) setApprovals([]);
+      }
+    }
+    void refreshApprovals();
+    const timer = window.setInterval(() => void refreshApprovals(), 2000);
+    return () => { disposed = true; window.clearInterval(timer); };
+  }, [legacySessionId]);
 
   const parseViews = useCallback(
     (targetMediaSessionId: string, envelopes: Awaited<ReturnType<typeof listPluginViews>>) =>
@@ -449,6 +487,42 @@ export function useMediaAssistantWorkspace(legacySessionId: string | null) {
     [inputs, mediaSessionId, parseViews],
   );
 
+  const resolveApproval = useCallback(async (
+    item: ActionApprovalItem,
+    decision: "approve" | "reject",
+  ) => {
+    if (item.approval.status !== "pending") return;
+    const approvalId = item.approval.approval_id;
+    setApprovalBusyIds((current) => new Set(current).add(approvalId));
+    try {
+      const submit = decision === "approve" ? approveAssistantAction : rejectAssistantAction;
+      const result = await submit(item.approval.execution_id, approvalId, {
+        client_operation_id: crypto.randomUUID(),
+        expected_state_version: item.expectedStateVersion,
+      });
+      const next = result.execution.pending_approval;
+      setApprovals((current) => current.map((row) => (
+        row.approval.approval_id === approvalId
+          ? {
+              approval: next ?? {
+                ...row.approval,
+                status: decision === "approve" ? "approved" : "rejected",
+                resolved_at: new Date().toISOString(),
+              },
+              executionStatus: result.execution.status,
+              expectedStateVersion: result.execution.state_version,
+            }
+          : row
+      )));
+    } finally {
+      setApprovalBusyIds((current) => {
+        const next = new Set(current);
+        next.delete(approvalId);
+        return next;
+      });
+    }
+  }, []);
+
   return {
     mediaSessionId,
     plugins,
@@ -457,6 +531,8 @@ export function useMediaAssistantWorkspace(legacySessionId: string | null) {
     historySources,
     hostActions,
     hostError,
+    approvals,
+    approvalBusyIds,
     inputs,
     busyViewKeys,
     loading,
@@ -466,5 +542,6 @@ export function useMediaAssistantWorkspace(legacySessionId: string | null) {
     commandErrors,
     setViewInput,
     runAction,
+    resolveApproval,
   };
 }

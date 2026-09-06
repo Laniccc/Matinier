@@ -167,6 +167,8 @@ export function AssistantWorkspace({
           ) : (
             <AssistantDetail
               hostActions={workspace.hostActions} hostError={workspace.hostError}
+              approvals={workspace.approvals} approvalBusyIds={workspace.approvalBusyIds}
+              onResolveApproval={(item, decision) => void workspace.resolveApproval(item, decision)}
               mediaSessionId={workspace.mediaSessionId}
               entry={selectedEntry}
               requestedPluginId={selectedEntry === null ? selectedPluginId : null}

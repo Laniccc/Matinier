@@ -33,6 +33,26 @@ export type NeedsInputSummary = {
   error_code: string | null;
 };
 
+export type PendingActionApprovalStatus = "pending" | "approved" | "rejected" | "expired";
+
+export type PendingActionApproval = {
+  approval_id: string;
+  execution_id: string;
+  capability: string;
+  action_label: string;
+  title: string | null;
+  team: string | null;
+  owner: string | null;
+  due: string | null;
+  candidate_id: string | null;
+  evidence_refs: string[];
+  status: PendingActionApprovalStatus;
+  expires_at: string;
+  created_at: string;
+  resolved_at: string | null;
+  grant_id: string | null;
+};
+
 export type ExternalEffectsSummary = {
   confirmed: number;
   unknown: number;
@@ -54,6 +74,7 @@ export type AssistantExecutionSummary = {
   step_count: number;
   result: JsonObject | null;
   needs_input: NeedsInputSummary | null;
+  pending_approval: PendingActionApproval | null;
   external_effects: ExternalEffectsSummary;
   error_code: string | null;
   created_at: string;
@@ -144,6 +165,11 @@ export type AssistantInputRequest = {
 };
 
 export type AssistantCancelRequest = {
+  client_operation_id: string;
+  expected_state_version: number;
+};
+
+export type AssistantApprovalRequest = {
   client_operation_id: string;
   expected_state_version: number;
 };

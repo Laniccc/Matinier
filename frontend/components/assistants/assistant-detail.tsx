@@ -6,6 +6,7 @@ import { PluginDocumentShelf } from "@/components/plugins/plugin-document-shelf"
 import { PluginViewCard } from "@/components/plugins/plugin-surface";
 import { HostActionPanel } from "@/components/plugins/host-action-panel";
 import { HostHistoryPanel } from "@/components/plugins/host-history-panel";
+import { ActionApprovalCard } from "./action-approval-card";
 import type { HostActionDescriptor, HostActionSelection } from "@/types/host-actions";
 import { hostContextKey } from "@/lib/host-action-state";
 import type {
@@ -13,6 +14,7 @@ import type {
   AssistantViewInputState,
   ParsedPluginViewEnvelope,
 } from "@/types/plugins";
+import type { ActionApprovalItem } from "@/components/plugins/use-media-assistant-workspace";
 
 
 export function AssistantDetail({
@@ -30,6 +32,9 @@ export function AssistantDetail({
   navigationTarget,
   hostActions = [],
   hostError,
+  approvals = [],
+  approvalBusyIds = new Set<string>(),
+  onResolveApproval,
 }: {
   mediaSessionId: string | null;
   entry: AssistantCatalogEntry | null;
@@ -49,6 +54,9 @@ export function AssistantDetail({
   navigationTarget?: "_blank";
   hostActions?: HostActionDescriptor[];
   hostError?: string | null;
+  approvals?: ActionApprovalItem[];
+  approvalBusyIds?: Set<string>;
+  onResolveApproval?: (item: ActionApprovalItem, decision: "approve" | "reject") => void;
 }) {
   const [selection, setSelection] = useState<HostActionSelection | null>(null);
   if (entry === null) {
@@ -99,6 +107,16 @@ export function AssistantDetail({
       {hostError ? <p className="pluginInlineError" role="alert">主程序操作/历史刷新失败：{hostError}</p> : null}
       {hostActions.filter(item => item.plugin_id === entry.pluginId && item.media_session_id === mediaSessionId).map(item =>
         <HostActionPanel key={`${item.media_session_id}:${item.plugin_id}:${item.source_kind}`} descriptor={item} selection={selection} />)}
+      {approvals.map((item) => (
+        <ActionApprovalCard
+          key={item.approval.approval_id}
+          approval={item.approval}
+          executionStatus={item.executionStatus}
+          resolving={approvalBusyIds.has(item.approval.approval_id)}
+          onApprove={() => onResolveApproval?.(item, "approve")}
+          onReject={() => onResolveApproval?.(item, "reject")}
+        />
+      ))}
 
       <div className="assistantViewStack">
         {selectedViews.map((view) => {

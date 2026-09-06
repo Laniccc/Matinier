@@ -31,6 +31,7 @@ import type {
   ProcessingJob,
 } from "@/types/artifacts";
 import type {
+  AssistantApprovalRequest,
   AssistantCancelRequest,
   AssistantEventsPage,
   AssistantExecutionDetail,
@@ -789,6 +790,34 @@ export function cancelAssistantExecution(
 ): Promise<AssistantOperationResponse> {
   return request<AssistantOperationResponse>(
     `/api/assistant/executions/${encodeURIComponent(executionId)}/cancel`,
+    {
+      method: "POST",
+      body: JSON.stringify(input),
+    },
+  );
+}
+
+export function approveAssistantAction(
+  executionId: string,
+  approvalId: string,
+  input: AssistantApprovalRequest,
+): Promise<AssistantOperationResponse> {
+  return request<AssistantOperationResponse>(
+    `/api/assistant/executions/${encodeURIComponent(executionId)}/approvals/${encodeURIComponent(approvalId)}/approve`,
+    {
+      method: "POST",
+      body: JSON.stringify(input),
+    },
+  );
+}
+
+export function rejectAssistantAction(
+  executionId: string,
+  approvalId: string,
+  input: AssistantApprovalRequest,
+): Promise<AssistantOperationResponse> {
+  return request<AssistantOperationResponse>(
+    `/api/assistant/executions/${encodeURIComponent(executionId)}/approvals/${encodeURIComponent(approvalId)}/reject`,
     {
       method: "POST",
       body: JSON.stringify(input),

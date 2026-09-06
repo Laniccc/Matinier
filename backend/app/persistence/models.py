@@ -1612,6 +1612,86 @@ class AssistantExecutionRecord(Base):
     )
 
 
+class AssistantActionApprovalRecord(Base):
+    __tablename__ = "assistant_action_approvals"
+    __table_args__ = (
+        Index(
+            "uq_assistant_action_approvals_pending_execution",
+            "execution_id",
+            unique=True,
+            sqlite_where=text("status = 'pending'"),
+            postgresql_where=text("status = 'pending'"),
+        ),
+        Index(
+            "ix_assistant_action_approvals_session_status",
+            "session_id",
+            "status",
+        ),
+    )
+
+    id: Mapped[str] = mapped_column(String(36), primary_key=True)
+    execution_id: Mapped[str] = mapped_column(
+        String(36),
+        ForeignKey("assistant_executions.id", ondelete="CASCADE"),
+        nullable=False,
+        index=True,
+    )
+    session_id: Mapped[str] = mapped_column(
+        String(36),
+        ForeignKey("sessions.id", ondelete="CASCADE"),
+        nullable=False,
+    )
+    actor_id: Mapped[str] = mapped_column(String(255), nullable=False)
+    capability: Mapped[str] = mapped_column(String(128), nullable=False)
+    tool_name: Mapped[str] = mapped_column(String(128), nullable=False)
+    candidate_id: Mapped[str | None] = mapped_column(String(36), nullable=True)
+    logical_action_key: Mapped[str | None] = mapped_column(
+        String(255),
+        nullable=True,
+    )
+    resource_scope_json: Mapped[dict[str, object]] = mapped_column(
+        JSON,
+        nullable=False,
+        default=dict,
+    )
+    arguments_json: Mapped[dict[str, object]] = mapped_column(
+        JSON,
+        nullable=False,
+        default=dict,
+    )
+    evidence_refs_json: Mapped[list[str]] = mapped_column(
+        JSON,
+        nullable=False,
+        default=list,
+    )
+    display_summary_json: Mapped[dict[str, object]] = mapped_column(
+        JSON,
+        nullable=False,
+        default=dict,
+    )
+    status: Mapped[str] = mapped_column(String(32), nullable=False, index=True)
+    grant_id: Mapped[str | None] = mapped_column(
+        String(36),
+        ForeignKey("action_grants.id", ondelete="SET NULL"),
+        nullable=True,
+        index=True,
+    )
+    expires_at: Mapped[dt.datetime] = mapped_column(
+        DateTime(timezone=True),
+        nullable=False,
+        index=True,
+    )
+    created_at: Mapped[dt.datetime] = mapped_column(
+        DateTime(timezone=True),
+        nullable=False,
+        default=utc_now,
+    )
+    resolved_at: Mapped[dt.datetime | None] = mapped_column(
+        DateTime(timezone=True),
+        nullable=True,
+    )
+
+
 class AssistantPackageBindingRecord(Base):
     __tablename__ = "assistant_package_bindings"
     __table_args__ = (

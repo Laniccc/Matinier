@@ -33,6 +33,7 @@ from app.assistant.state_machine import (
 from app.meeting_state.models import EvidenceMessageSnapshot
 from app.persistence.models import (
     ActionGrantRecord,
+    AssistantActionApprovalRecord,
     AssistantClientOperationRecord,
     AssistantContextSnapshotRecord,
     AssistantEventRecord,
@@ -321,6 +322,7 @@ class AssistantRepository:
         payload: Mapping[str, object] | None = None,
         result: Mapping[str, object] | None = None,
         snapshot_id: str | None = None,
+        grant_id: str | None = None,
         error_code: str | None = None,
         error_message: str | None = None,
         changed_at: dt.datetime | None = None,
@@ -349,6 +351,8 @@ class AssistantRepository:
         }
         if snapshot_id is not None:
             values["snapshot_id"] = snapshot_id
+        if grant_id is not None:
+            values["grant_id"] = grant_id
         if record.started_at is None and next_status not in {"received", "queued"}:
             values["started_at"] = timestamp
         result_row = self._db_session.execute(
@@ -724,6 +728,139 @@ class AssistantRepository:
         return self.transition_grant_status(
             grant_id, "expired", expected_status=expected_status, changed_at=changed_at
         )
+
+    def get_action_approval(
+        self,
+        approval_id: str,
+    ) -> AssistantActionApprovalRecord | None:
+        return self._db_session.get(AssistantActionApprovalRecord, approval_id)
+
+    def get_pending_action_approval(
+        self,
+        execution_id: str,
+    ) -> AssistantActionApprovalRecord | None:
+        return self._db_session.scalar(
+            select(AssistantActionApprovalRecord).where(
+                AssistantActionApprovalRecord.execution_id == execution_id,
+                AssistantActionApprovalRecord.status == "pending",
+            )
+        )
+
+    def list_latest_action_approvals(
+        self,
+        execution_ids: Sequence[str],
+    ) -> dict[str, AssistantActionApprovalRecord]:
+        if not execution_ids:
+            return {}
+        rows = list(
+            self._db_session.scalars(
+                select(AssistantActionApprovalRecord)
+                .where(
+                    AssistantActionApprovalRecord.execution_id.in_(
+                        tuple(execution_ids)
+                    )
+                )
+                .order_by(
+                    AssistantActionApprovalRecord.created_at.desc(),
+                    AssistantActionApprovalRecord.id.desc(),
+                )
+            )
+        )
+        latest: dict[str, AssistantActionApprovalRecord] = {}
+        for row in rows:
+            latest.setdefault(row.execution_id, row)
+        return latest
+
+    def create_pending_action_approval(
+        self,
+        *,
+        execution_id: str,
+        session_id: str,
+        actor_id: str,
+        capability: str,
+        tool_name: str,
+        candidate_id: str | None,
+        logical_action_key: str | None,
+        resource_scope: Mapping[str, object],
+        arguments: Mapping[str, object],
+        evidence_refs: Sequence[str],
+        display_summary: Mapping[str, object],
+        expires_at: dt.datetime,
+        approval_id: str | None = None,
+        created_at: dt.datetime | None = None,
+    ) -> AssistantActionApprovalRecord:
+        existing = self.get_pending_action_approval(execution_id)
+        if existing is not None:
+            return existing
+        timestamp = created_at or utc_now()
+        record = AssistantActionApprovalRecord(
+            id=approval_id or str(uuid.uuid4()),
+            execution_id=execution_id,
+            session_id=session_id,
+            actor_id=actor_id,
+            capability=capability,
+            tool_name=tool_name,
+            candidate_id=candidate_id,
+            logical_action_key=logical_action_key,
+            resource_scope_json=dict(resource_scope),
+            arguments_json=dict(arguments),
+            evidence_refs_json=list(dict.fromkeys(evidence_refs)),
+            display_summary_json=dict(display_summary),
+            status="pending",
+            grant_id=None,
+            expires_at=expires_at,
+            created_at=timestamp,
+            resolved_at=None,
+        )
+        self._db_session.add(record)
+        self._db_session.flush()
+        return record
+
+    def resolve_action_approval(
+        self,
+        approval_id: str,
+        *,
+        target_status: str,
+        grant_id: str | None = None,
+        resolved_at: dt.datetime | None = None,
+    ) -> AssistantActionApprovalRecord:
+        if target_status not in {"approved", "rejected", "expired"}:
+            raise ValueError(f"invalid approval status: {target_status}")
+        record = self.get_action_approval(approval_id)
+        if record is None:
+            raise LookupError(f"Action approval not found: {approval_id}")
+        timestamp = resolved_at or utc_now()
+        if record.status == target_status:
+            return record
+        values: dict[str, object] = {
+            "status": target_status,
+            "resolved_at": timestamp,
+        }
+        if grant_id is not None:
+            values["grant_id"] = grant_id
+        result = self._db_session.execute(
+            update(AssistantActionApprovalRecord)
+            .where(
+                AssistantActionApprovalRecord.id == approval_id,
+                AssistantActionApprovalRecord.status == "pending",
+            )
+            .values(**values)
+            .execution_options(synchronize_session="fetch")
+        )
+        if result.rowcount != 1:
+            latest = self.get_action_approval(approval_id)
+            if latest is None:
+                raise LookupError(f"Action approval not found: {approval_id}")
+            if latest.status == target_status:
+                return latest
+            raise AssistantStateConflictError(
+                f"Action approval {approval_id} is {latest.status}"
+            )
+        self._db_session.flush()
+        updated = self.get_action_approval(approval_id)
+        if updated is None:
+            raise LookupError(f"Action approval not found: {approval_id}")
+        return updated
 
     def prepare_tool_call(
         self,

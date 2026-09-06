@@ -33,11 +33,13 @@ from app.assistant.repository import (
 )
 from app.assistant.state_machine import is_terminal_execution_status
 from app.persistence.models import (
+    AssistantActionApprovalRecord,
     AssistantEventRecord,
     AssistantExecutionRecord,
     AssistantStepRecord,
     AssistantToolCallRecord,
     SessionRecord,
+    utc_now,
 )
 from app.settings import Settings
 
@@ -104,6 +106,24 @@ class NeedsInputSummary(FrozenApiModel):
     error_code: str | None = None
 
 
+class PendingActionApprovalSummary(FrozenApiModel):
+    approval_id: str
+    execution_id: str
+    capability: str
+    action_label: str
+    title: str | None = None
+    team: str | None = None
+    owner: str | None = None
+    due: str | None = None
+    candidate_id: str | None = None
+    evidence_refs: tuple[str, ...] = ()
+    status: Literal["pending", "approved", "rejected", "expired"]
+    expires_at: dt.datetime
+    created_at: dt.datetime
+    resolved_at: dt.datetime | None = None
+    grant_id: str | None = None
+
+
 class ExternalEffectsSummary(FrozenApiModel):
     confirmed: int = Field(ge=0)
     unknown: int = Field(ge=0)
@@ -125,6 +145,7 @@ class AssistantExecutionSummary(FrozenApiModel):
     step_count: int
     result: dict[str, Any] | None
     needs_input: NeedsInputSummary | None
+    pending_approval: PendingActionApprovalSummary | None
     external_effects: ExternalEffectsSummary
     error_code: str | None
     created_at: dt.datetime
@@ -208,6 +229,11 @@ class AssistantCancelRequest(FrozenApiModel):
     expected_state_version: int = Field(ge=1)
 
 
+class AssistantApprovalRequest(FrozenApiModel):
+    client_operation_id: str = Field(min_length=1, max_length=255)
+    expected_state_version: int = Field(ge=1)
+
+
 class AssistantOperationResponse(FrozenApiModel):
     execution: AssistantExecutionSummary
 
@@ -285,10 +311,52 @@ def _needs_input(record: AssistantExecutionRecord) -> NeedsInputSummary | None:
     )
 
 
+def _pending_approval(
+    record: AssistantActionApprovalRecord | None,
+) -> PendingActionApprovalSummary | None:
+    if record is None:
+        return None
+    display = dict(record.display_summary_json or {})
+    action_label = display.get("action_label")
+    if not isinstance(action_label, str) or not action_label.strip():
+        action_label = record.capability
+    def _text(value: object) -> str | None:
+        if value is None:
+            return None
+        text = str(value).strip()
+        return text or None
+    return PendingActionApprovalSummary(
+        approval_id=record.id,
+        execution_id=record.execution_id,
+        capability=record.capability,
+        action_label=action_label,
+        title=_text(display.get("title")),
+        team=_text(display.get("team")),
+        owner=_text(display.get("owner")),
+        due=_text(display.get("due")),
+        candidate_id=record.candidate_id,
+        evidence_refs=tuple(
+            str(value)
+            for value in record.evidence_refs_json
+            if str(value).strip()
+        ),
+        status=record.status,  # type: ignore[arg-type]
+        expires_at=record.expires_at,
+        created_at=record.created_at,
+        resolved_at=record.resolved_at,
+        grant_id=record.grant_id,
+    )
+
+
 def _execution_summary(
     repository: AssistantRepository,
     record: AssistantExecutionRecord,
+    *,
+    approval: AssistantActionApprovalRecord | None = None,
 ) -> AssistantExecutionSummary:
+    if approval is None:
+        latest = repository.list_latest_action_approvals((record.id,))
+        approval = latest.get(record.id)
     return AssistantExecutionSummary(
         execution_id=record.id,
         session_id=record.session_id,
@@ -308,6 +376,7 @@ def _execution_summary(
             else None
         ),
         needs_input=_needs_input(record),
+        pending_approval=_pending_approval(approval),
         external_effects=_external_effects(repository, record.id),
         error_code=record.error_code,
         created_at=record.created_at,
@@ -360,7 +429,7 @@ def _tool_call_summary(record: AssistantToolCallRecord) -> AssistantToolCallSumm
     )
 
 
-def _operation_hash(kind: Literal["input", "cancel"], payload: BaseModel) -> str:
+def _operation_hash(kind: Literal["input", "cancel", "approve", "reject"], payload: BaseModel) -> str:
     canonical = json.dumps(
         {"kind": kind, "request": payload.model_dump(mode="json")},
         ensure_ascii=False,
@@ -375,7 +444,7 @@ def _operation_replay(
     *,
     execution_id: str,
     client_operation_id: str,
-    kind: Literal["input", "cancel"],
+    kind: Literal["input", "cancel", "approve", "reject"],
     request_hash: str,
 ) -> AssistantOperationResponse | None:
     existing = repository.get_client_operation(
@@ -648,10 +717,17 @@ def get_assistant_state(
     _require_session(db_session, session_id)
     repository = AssistantRepository(db_session)
     records = repository.list_executions(session_id)
+    approvals = repository.list_latest_action_approvals(
+        tuple(record.id for record in records)
+    )
     active: list[AssistantExecutionSummary] = []
     terminal: list[AssistantExecutionSummary] = []
     for record in records:
-        summary = _execution_summary(repository, record)
+        summary = _execution_summary(
+            repository,
+            record,
+            approval=approvals.get(record.id),
+        )
         if is_terminal_execution_status(record.profile, record.status):
             if len(terminal) < 20:
                 terminal.append(summary)
@@ -886,4 +962,322 @@ def cancel_assistant_execution(
     return response
 
 
+def _approval_http_error(
+    code: str,
+    message: str,
+    *,
+    status_code: int = status.HTTP_409_CONFLICT,
+) -> HTTPException:
+    return HTTPException(
+        status_code=status_code,
+        detail={"code": code, "message": message},
+    )
+
+
+def _require_approval(
+    repository: AssistantRepository,
+    *,
+    execution: AssistantExecutionRecord,
+    approval_id: str,
+) -> AssistantActionApprovalRecord:
+    approval = repository.get_action_approval(approval_id)
+    if (
+        approval is None
+        or approval.execution_id != execution.id
+        or approval.session_id != execution.session_id
+    ):
+        raise HTTPException(
+            status_code=status.HTTP_404_NOT_FOUND,
+            detail="Action approval not found",
+        )
+    return approval
+
+
+async def _record_approval_operation(
+    repository: AssistantRepository,
+    *,
+    execution: AssistantExecutionRecord,
+    payload: AssistantApprovalRequest,
+    kind: Literal["approve", "reject"],
+    request_hash: str,
+    runtime: AssistantRuntime,
+    resume: bool,
+) -> AssistantOperationResponse:
+    response = AssistantOperationResponse(
+        execution=_execution_summary(repository, execution)
+    )
+    try:
+        repository.record_client_operation(
+            execution_id=execution.id,
+            client_operation_id=payload.client_operation_id,
+            kind=kind,
+            request_hash=request_hash,
+            response=response.model_dump(mode="json"),
+        )
+    except AssistantIdempotencyConflictError as error:
+        raise HTTPException(
+            status_code=status.HTTP_409_CONFLICT,
+            detail={"code": "client_operation_conflict"},
+        ) from error
+    return response
+
+
+@router.post(
+    "/assistant/executions/{execution_id}/approvals/{approval_id}/approve",
+    response_model=AssistantOperationResponse,
+    status_code=status.HTTP_202_ACCEPTED,
+)
+async def approve_assistant_action(
+    execution_id: str,
+    approval_id: str,
+    payload: AssistantApprovalRequest,
+    runtime: AssistantRuntime = Depends(get_assistant_runtime),
+    settings: Settings = Depends(get_app_settings),
+    db_session: Session = Depends(get_db_session),
+) -> AssistantOperationResponse:
+    repository = AssistantRepository(db_session)
+    record = repository.get_execution(execution_id)
+    if record is None:
+        raise HTTPException(
+            status_code=status.HTTP_404_NOT_FOUND,
+            detail="Assistant execution not found",
+        )
+    request_hash = _operation_hash("approve", payload)
+    replay = _operation_replay(
+        repository,
+        execution_id=execution_id,
+        client_operation_id=payload.client_operation_id,
+        kind="approve",
+        request_hash=request_hash,
+    )
+    if replay is not None:
+        latest = repository.get_execution_required(execution_id)
+        await _reschedule_if_active(runtime, latest)
+        return replay
+    approval = _require_approval(
+        repository,
+        execution=record,
+        approval_id=approval_id,
+    )
+    if approval.status == "approved":
+        latest = repository.get_execution_required(record.id)
+        response = await _record_approval_operation(
+            repository,
+            execution=latest,
+            payload=payload,
+            kind="approve",
+            request_hash=request_hash,
+            runtime=runtime,
+            resume=False,
+        )
+        db_session.commit()
+        await _reschedule_if_active(runtime, latest)
+        return response
+    if approval.status == "rejected":
+        raise _approval_http_error(
+            "approval_rejected",
+            "This external action was already rejected.",
+        )
+    now = utc_now()
+    expires_at = approval.expires_at
+    if expires_at.tzinfo is None:
+        expires_at = expires_at.replace(tzinfo=dt.UTC)
+    if expires_at <= now or approval.status == "expired":
+        if approval.status == "pending":
+            repository.resolve_action_approval(approval.id, target_status="expired")
+            db_session.commit()
+        raise _approval_http_error(
+            "approval_expired",
+            "This approval has expired and cannot authorize an external write.",
+        )
+    if record.state_version != payload.expected_state_version:
+        raise _state_conflict(repository, record)
+    if record.profile != "action_run" or record.status != "needs_input":
+        raise _state_conflict(
+            repository,
+            record,
+            code="execution_not_waiting_for_approval",
+        )
+    candidate_ids = (
+        (approval.candidate_id,) if approval.candidate_id else ()
+    )
+    grant_expires = min(
+        expires_at,
+        now + dt.timedelta(seconds=settings.assistant_grant_max_ttl_seconds),
+    )
+    team_id = approval.resource_scope_json.get("linear_team_id")
+    team_id = team_id if isinstance(team_id, str) and team_id.strip() else None
+    try:
+        grant = repository.create_grant(
+            session_id=record.session_id,
+            actor_id=approval.actor_id,
+            goal=record.goal,
+            capabilities=(approval.capability,),
+            resource_scope=dict(approval.resource_scope_json),
+            candidate_ids=candidate_ids,
+            max_side_effects=1,
+            expires_at=grant_expires,
+            linear_team_id=team_id,
+        )
+        approval = repository.resolve_action_approval(
+            approval.id,
+            target_status="approved",
+            grant_id=grant.id,
+            resolved_at=now,
+        )
+        if approval.grant_id != grant.id:
+            latest = repository.get_execution_required(record.id)
+            response = await _record_approval_operation(
+                repository,
+                execution=latest,
+                payload=payload,
+                kind="approve",
+                request_hash=request_hash,
+                runtime=runtime,
+                resume=False,
+            )
+            db_session.commit()
+            await _reschedule_if_active(runtime, latest)
+            return response
+        updated = repository.transition_execution(
+            record.id,
+            expected_version=payload.expected_state_version,
+            target_status="planning",
+            event_type="action.approval_granted",
+            summary="User approved a scoped external write",
+            payload={
+                "approval_id": approval.id,
+                "grant_id": grant.id,
+                "client_operation_id": payload.client_operation_id,
+            },
+            result={
+                "input_received": True,
+                "pending_approval_id": approval.id,
+                "user_rejected": False,
+            },
+            grant_id=grant.id,
+        )
+    except AssistantStateConflictError as error:
+        latest = repository.get_execution_required(record.id)
+        raise _state_conflict(repository, latest) from error
+    response = await _record_approval_operation(
+        repository,
+        execution=updated,
+        payload=payload,
+        kind="approve",
+        request_hash=request_hash,
+        runtime=runtime,
+        resume=True,
+    )
+    db_session.commit()
+    await _enqueue(runtime, record.id, resume=True)
+    return response
+
+
+@router.post(
+    "/assistant/executions/{execution_id}/approvals/{approval_id}/reject",
+    response_model=AssistantOperationResponse,
+)
+async def reject_assistant_action(
+    execution_id: str,
+    approval_id: str,
+    payload: AssistantApprovalRequest,
+    runtime: AssistantRuntime = Depends(get_assistant_runtime),
+    db_session: Session = Depends(get_db_session),
+) -> AssistantOperationResponse:
+    repository = AssistantRepository(db_session)
+    record = repository.get_execution(execution_id)
+    if record is None:
+        raise HTTPException(
+            status_code=status.HTTP_404_NOT_FOUND,
+            detail="Assistant execution not found",
+        )
+    request_hash = _operation_hash("reject", payload)
+    replay = _operation_replay(
+        repository,
+        execution_id=execution_id,
+        client_operation_id=payload.client_operation_id,
+        kind="reject",
+        request_hash=request_hash,
+    )
+    if replay is not None:
+        return replay
+    approval = _require_approval(
+        repository,
+        execution=record,
+        approval_id=approval_id,
+    )
+    if approval.status == "rejected":
+        latest = repository.get_execution_required(record.id)
+        response = await _record_approval_operation(
+            repository,
+            execution=latest,
+            payload=payload,
+            kind="reject",
+            request_hash=request_hash,
+            runtime=runtime,
+            resume=False,
+        )
+        db_session.commit()
+        return response
+    if approval.status == "approved":
+        raise _approval_http_error(
+            "approval_already_approved",
+            "This external action was already approved.",
+        )
+    if record.state_version != payload.expected_state_version:
+        raise _state_conflict(repository, record)
+    if is_terminal_execution_status(record.profile, record.status):
+        raise _state_conflict(
+            repository,
+            record,
+            code="execution_already_terminal",
+        )
+    effects = _external_effects(repository, record.id)
+    result = dict(record.result_json or {})
+    result.update(
+        {
+            "cancelled": True,
+            "user_rejected": True,
+            "pending_approval_id": approval.id,
+            "confirmed_external_side_effects": effects.confirmed,
+            "unknown_external_side_effects": effects.unknown,
+            "existing_external_actions_remain": effects.existing_actions_remain,
+        }
+    )
+    try:
+        if approval.status == "pending":
+            repository.resolve_action_approval(
+                approval.id,
+                target_status="rejected",
+            )
+        updated = repository.transition_execution(
+            record.id,
+            expected_version=payload.expected_state_version,
+            target_status="cancelled",
+            event_type="action.approval_rejected",
+            summary="User rejected the external write",
+            payload={
+                "approval_id": approval.id,
+                "client_operation_id": payload.client_operation_id,
+            },
+            result=result,
+        )
+    except AssistantStateConflictError as error:
+        latest = repository.get_execution_required(record.id)
+        raise _state_conflict(repository, latest) from error
+    response = await _record_approval_operation(
+        repository,
+        execution=updated,
+        payload=payload,
+        kind="reject",
+        request_hash=request_hash,
+        runtime=runtime,
+        resume=False,
+    )
+    db_session.commit()
+    return response
+
+
 __all__ = ["router"]
+
