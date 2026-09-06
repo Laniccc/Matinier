@@ -23,7 +23,7 @@ StepKind = Literal["plan", "tool", "observe", "reconcile", "respond"]
 ToolEffect = Literal["read", "local_write", "external_write"]
 ObservationSource = Literal["tool", "model", "system", "user"]
 SubagentRole = Literal["evidence", "conflict", "linear_research"]
-ClientOperationKind = Literal["input", "cancel"]
+ClientOperationKind = Literal["input", "cancel", "approve", "reject"]
 
 
 class FrozenModel(BaseModel):

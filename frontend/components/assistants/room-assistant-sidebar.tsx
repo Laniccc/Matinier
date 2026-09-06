@@ -48,6 +48,8 @@ export function RoomAssistantSidebar({ legacySessionId }: { legacySessionId: str
           <AssistantCatalog entries={catalog} selectedPluginId={selectedPluginId} onSelect={setRequestedPluginId} navigationTarget="_blank" />
           <AssistantDetail mediaSessionId={workspace.mediaSessionId} entry={selectedEntry} requestedPluginId={null}
             hostActions={workspace.hostActions} hostError={workspace.hostError}
+            approvals={workspace.approvals} approvalBusyIds={workspace.approvalBusyIds}
+            onResolveApproval={(item, decision) => void workspace.resolveApproval(item, decision)}
             parsedViews={workspace.views} inputs={workspace.inputs} busyViewKeys={workspace.busyViewKeys}
             viewError={workspace.errors.views} documentError={workspace.errors.documents}
             commandError={selectedPluginId ? workspace.commandErrors[selectedPluginId] ?? null : null}

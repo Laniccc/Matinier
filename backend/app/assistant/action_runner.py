@@ -3,6 +3,7 @@ from __future__ import annotations
 from app.assistant.plugin_repository import MeetingPluginDenied
 
 import asyncio
+import datetime as dt
 import hashlib
 import json
 import time
@@ -26,6 +27,11 @@ from app.assistant.parser import (
     RespondDecision,
 )
 from app.assistant.planner import AvailableTool, PlannerOutcome, PlanningObservation
+from app.assistant.grants import (
+    GrantAuthorizationError,
+    action_grant_from_record,
+    authorize_tool_use,
+)
 from app.assistant.repository import AssistantRepository
 from app.assistant.subagents import SubagentCoordinator
 from app.assistant.tools import ToolExecutor, ToolInvocation, ToolRegistry
@@ -37,12 +43,18 @@ from app.persistence.models import (
     AssistantContextSnapshotRecord,
     AssistantExecutionRecord,
     AssistantToolCallRecord,
+    utc_now,
 )
 
 
 TERMINAL_ACTION_STATUSES = frozenset(
     {"completed", "partial", "failed", "cancelled"}
 )
+APPROVAL_REQUIRED_GRANT_CODES = frozenset({"grant_required", "grant_inactive"})
+EXTERNAL_ACTION_LABELS = {
+    "task.create": "创建 Linear 任务",
+}
+APPROVAL_TTL = dt.timedelta(minutes=15)
 
 
 class FrozenActionModel(BaseModel):
@@ -419,10 +431,22 @@ class ActionRunRunner:
             )
             progress.model_calls += outcome.model_call_count
             self._check_authority(execution.id)
+            decision = outcome.decision
+            if (
+                isinstance(decision, InvokeToolsDecision)
+                and review.external_writes_allowed
+            ):
+                paused = self._pause_if_external_write_unauthorized(
+                    execution=self._get_execution(execution.id),
+                    snapshot=progress.snapshot,
+                    decision=decision,
+                    planning_round=planning_round,
+                )
+                if paused is not None:
+                    return paused
             progress.planning_rounds = planning_round
             progress.steps += 1
             self._persist_plan_step(execution.id, planning_round, outcome)
-            decision = outcome.decision
 
             if isinstance(decision, (RespondDecision, CompleteDecision)):
                 terminal_status: ActionRunStatus = (
@@ -1017,21 +1041,195 @@ class ActionRunRunner:
             )
             db_session.commit()
 
+    def _pause_if_external_write_unauthorized(
+        self,
+        *,
+        execution: AssistantExecutionRecord,
+        snapshot: ContextSnapshot,
+        decision: InvokeToolsDecision,
+        planning_round: int,
+    ) -> ActionRunResult | None:
+        for index, call in enumerate(decision.tool_calls):
+            spec = self._registry.get(call.tool_name).spec
+            if spec.effect != "external_write":
+                continue
+            invocation = self._invocation_policy.build(
+                execution=execution,
+                snapshot=snapshot,
+                call=call,
+                spec=spec,
+                planning_round=planning_round,
+                call_index=index,
+                step_id=str(uuid.uuid4()),
+            )
+            grant = self._execution_grant(execution)
+            try:
+                authorize_tool_use(
+                    grant,
+                    effect=spec.effect,
+                    capability=spec.capability,
+                    session_id=execution.session_id,
+                    execution_goal=execution.goal,
+                    candidate_id=invocation.candidate_id,
+                    requested_resource_scope=invocation.requested_resource_scope,
+                )
+            except GrantAuthorizationError as error:
+                if error.code not in APPROVAL_REQUIRED_GRANT_CODES:
+                    raise
+                return self._pause_for_approval(
+                    execution=execution,
+                    snapshot=snapshot,
+                    spec=spec,
+                    invocation=invocation,
+                    actor_id=self._actor_id(snapshot, grant),
+                )
+        return None
+
+    def _execution_grant(self, execution: AssistantExecutionRecord):
+        if execution.grant_id is None:
+            return None
+        with self._database.session() as db_session:
+            record = AssistantRepository(db_session).get_grant(execution.grant_id)
+            if record is None:
+                return None
+            return action_grant_from_record(record)
+
+    @staticmethod
+    def _actor_id(snapshot: ContextSnapshot, grant) -> str:
+        if grant is not None:
+            return grant.actor_id
+        for message in snapshot.evidence_messages:
+            if message.message_kind == "user_input":
+                return message.actor_id
+        return "local-user"
+
+    @staticmethod
+    def _approval_display(
+        *,
+        spec: ToolSpec,
+        invocation: ToolInvocation,
+        snapshot: ContextSnapshot,
+    ) -> dict[str, Any]:
+        meeting_state = snapshot.state_slice.get("meeting_state")
+        candidates = []
+        if isinstance(meeting_state, Mapping):
+            raw_candidates = meeting_state.get("action_candidates")
+            if isinstance(raw_candidates, list):
+                candidates = raw_candidates
+        candidate = next(
+            (
+                item
+                for item in candidates
+                if isinstance(item, Mapping)
+                and item.get("candidate_id") == invocation.candidate_id
+            ),
+            None,
+        )
+        content = (
+            candidate.get("content")
+            if isinstance(candidate, Mapping)
+            else None
+        )
+        content = content if isinstance(content, Mapping) else {}
+
+        def grounded(field: str) -> object:
+            value = content.get(field)
+            if not isinstance(value, Mapping):
+                return None
+            inner = value.get("value")
+            if isinstance(inner, Mapping):
+                return inner.get("spoken_text") or inner.get("linear_user_id")
+            return inner
+
+        team = invocation.requested_resource_scope.get("linear_team_id")
+        return {
+            "action_label": EXTERNAL_ACTION_LABELS.get(
+                spec.capability,
+                spec.capability,
+            ),
+            "title": grounded("title"),
+            "team": team,
+            "owner": grounded("assignee"),
+            "due": grounded("due_at"),
+            "side_effect": "external_write",
+        }
+
+    def _pause_for_approval(
+        self,
+        *,
+        execution: AssistantExecutionRecord,
+        snapshot: ContextSnapshot,
+        spec: ToolSpec,
+        invocation: ToolInvocation,
+        actor_id: str,
+    ) -> ActionRunResult:
+        display = self._approval_display(
+            spec=spec,
+            invocation=invocation,
+            snapshot=snapshot,
+        )
+        with self._database.session() as db_session:
+            if self._execution_guard is not None:
+                self._execution_guard.fence(db_session, execution.id)
+            repository = AssistantRepository(db_session)
+            latest = repository.get_execution_required(execution.id)
+            approval = repository.create_pending_action_approval(
+                execution_id=latest.id,
+                session_id=latest.session_id,
+                actor_id=actor_id,
+                capability=spec.capability,
+                tool_name=spec.name,
+                candidate_id=invocation.candidate_id,
+                logical_action_key=invocation.logical_action_key,
+                resource_scope=invocation.requested_resource_scope,
+                arguments=invocation.arguments,
+                evidence_refs=invocation.evidence_refs,
+                display_summary=display,
+                expires_at=utc_now() + APPROVAL_TTL,
+            )
+            db_session.commit()
+        question = (
+            f"Agent 请求执行外部操作：{display['action_label']}。"
+            "允许后才会创建受限授权并继续执行。"
+        )
+        return self._needs_input(
+            execution.id,
+            NeedsInputDecision(
+                decision_summary="External write is waiting for explicit user approval",
+                question=question,
+                choices=("approve", "reject"),
+                evidence_refs=invocation.evidence_refs[:1] or snapshot.evidence_refs[:1],
+            ),
+            extra_result={
+                "pending_approval_id": approval.id,
+                "user_rejected": False,
+            },
+            event_type="action.approval_required",
+            summary="Action Run is waiting for user approval of an external write",
+        )
+
     def _needs_input(
         self,
         execution_id: str,
         decision: NeedsInputDecision,
+        *,
+        extra_result: Mapping[str, object] | None = None,
+        event_type: str = "action.needs_input",
+        summary: str = "Action Run needs user input",
     ) -> ActionRunResult:
+        result = {
+            "question": decision.question,
+            "choices": list(decision.choices),
+            "evidence_refs": list(decision.evidence_refs),
+        }
+        if extra_result:
+            result.update(dict(extra_result))
         record = self._transition(
             execution_id,
             "needs_input",
-            event_type="action.needs_input",
-            summary="Action Run needs user input",
-            result={
-                "question": decision.question,
-                "choices": list(decision.choices),
-                "evidence_refs": list(decision.evidence_refs),
-            },
+            event_type=event_type,
+            summary=summary,
+            result=result,
         )
         return self._result(record)
 

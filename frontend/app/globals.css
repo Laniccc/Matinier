@@ -4820,5 +4820,22 @@ button.pluginTone-danger,
 }
 .hostActionPanel p, .hostHistoryPanel p { margin: 0; }
 .hostActionPreview { display: grid; gap: 10px; border-top: 1px solid #497e83; padding-top: 12px; }
+.actionApprovalCard {
+  display: grid;
+  gap: 10px;
+  padding: 14px;
+  margin-block: 16px;
+  border: 1px solid #497e83;
+  border-radius: 12px;
+  overflow-wrap: anywhere;
+}
+.actionApprovalCard header,
+.actionApprovalCard dl,
+.actionApprovalCard p { margin: 0; }
+.actionApprovalCard dl { display: grid; gap: 6px; }
+.actionApprovalCard dl > div { display: grid; grid-template-columns: 72px 1fr; gap: 8px; }
+.actionApprovalCard dt { color: #9ec8cc; }
+.actionApprovalCard dd { margin: 0; }
+.actionApprovalActions { display: flex; justify-content: space-between; gap: 8px; }
 .hostHistoryPanel nav { display: flex; flex-wrap: wrap; gap: 8px; }
 .hostActionPanel select[multiple] { min-height: 88px; }
